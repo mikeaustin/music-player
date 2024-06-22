@@ -2,10 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url(/poxel-font.ttf);
+@font-face {
+  font-family: Poxel;
+  src: url(poxel-font.ttf);
+}
 
 :root {
-  font-family: 'Poxel Font', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Poxel, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
