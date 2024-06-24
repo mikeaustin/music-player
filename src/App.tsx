@@ -170,6 +170,8 @@ function Equalizer(props: {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
 
   let lcdRef: HTMLCanvasElement;
+  let frequencies = Array.from({ length: 20 }, () => 1.0);
+  let frequencyPeaks = Array.from({ length: 20 }, () => 1.0);
 
   createEffect(() => {
     if (lcdRef) {
@@ -178,12 +180,30 @@ function Equalizer(props: {
       if (context) {
         context.fillStyle = '#38BDF8';
 
-        for (let freq = 0; freq < 20; ++freq) {
-          for (let i = 0; i < 50; ++i) {
-            context.fillRect(freq * 15, i * 3, 10, 2);
+        setInterval(() => {
+          for (let i = 0; i < 20; ++i) {
+            frequencies[i] = (frequencies[i] * 2 + Math.random()) / 3;
+          }
+        }, 100);
+      }
+
+      const animationFrame = () => {
+        if (!context) {
+          return;
+        }
+
+        context.clearRect(0, 0, 546, 118);
+
+        for (let [index, freq] of frequencies.entries()) {
+          for (let i = 0; i < freq * 23; ++i) {
+            context.fillRect(index * 15, 66 - (i * 3), 10, 2);
           }
         }
-      }
+
+        requestAnimationFrame(animationFrame);
+      };
+
+      requestAnimationFrame(animationFrame);
     }
   });
 
