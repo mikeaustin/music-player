@@ -62,8 +62,6 @@ function Dial(props: {
     const _firstEvent = firstEvent();
 
     if (_firstEvent) {
-      console.log(event.clientY - _firstEvent.clientY);
-
       const value = Math.max(0, Math.min(270, _value + (_firstEvent.clientY - event.clientY))) / 270;
 
       setValue(value);
@@ -171,39 +169,84 @@ function Equalizer(props: {
 
   let lcdRef: HTMLCanvasElement;
   let frequencies = Array.from({ length: 20 }, () => 1.0);
-  let frequencyPeaks = Array.from({ length: 20 }, () => 1.0);
+  let peakFrequencies = Array.from({ length: 20 }, () => 0.0);
+  let canvasInterval: ReturnType<typeof setInterval>;
 
   createEffect(() => {
+    if (!isPowerOn()) {
+      clearInterval(canvasInterval);
+
+      var context = lcdRef.getContext("2d");
+
+      if (context) {
+        context.clearRect(0, 0, 546, 118);
+      }
+
+      return;
+    }
+
     if (lcdRef) {
       var context = lcdRef.getContext("2d");
 
       if (context) {
         context.fillStyle = '#38BDF8';
 
-        setInterval(() => {
-          for (let i = 0; i < 20; ++i) {
-            frequencies[i] = (frequencies[i] * 2 + Math.random()) / 3;
+        for (let i = 0; i < frequencies.length; ++i) {
+          frequencies[i] = 1.0;
+        }
+
+        let interval = setInterval(() => {
+          context.clearRect(0, 0, 546, 118);
+
+          for (let [index, freq] of frequencies.entries()) {
+            for (let i = 0; i < freq * 23; ++i) {
+              context.fillRect(index * 15, 66 - (i * 3), 10, 2);
+            }
           }
-        }, 100);
+
+          for (let i = 0; i < frequencies.length; ++i) {
+            frequencies[i] = frequencies[i] - (1 / 22);
+          }
+
+          if (frequencies[0] <= 0) {
+            clearInterval(interval);
+          }
+        }, 50);
       }
 
-      const animationFrame = () => {
-        if (!context) {
-          return;
-        }
+      setTimeout(() => {
+        canvasInterval = setInterval(() => {
+          if (!context) {
+            return;
+          }
 
-        context.clearRect(0, 0, 546, 118);
+          for (let i = 0; i < 20; ++i) {
+            frequencies[i] = (frequencies[i] * 2 + Math.random()) / 3;
 
-        for (let [index, freq] of frequencies.entries()) {
-          for (let i = 0; i < freq * 23; ++i) {
-            context.fillRect(index * 15, 66 - (i * 3), 10, 2);
+            // if (frequencies[i] > peakFrequencies[i]) {
+            //   peakFrequencies[i] = frequencies[i];
+            // }
+          }
+
+          context.clearRect(0, 0, 546, 118);
+
+          for (let [index, freq] of frequencies.entries()) {
+            // context.fillRect(index * 15, 66 - (Math.floor(peakFrequencies[index] * 23 * 3)), 10, 2);
+
+            for (let i = 0; i < freq * 23; ++i) {
+              context.fillRect(index * 15, 66 - (i * 3), 10, 2);
+            }
+          }
+        }, 100);
+      }, 1500);
+
+      setInterval(() => {
+        for (let i = 0; i < 20; ++i) {
+          if (frequencies[i] < peakFrequencies[i]) {
+            peakFrequencies[i] = peakFrequencies[i] - 23 / 1;
           }
         }
-
-        requestAnimationFrame(animationFrame);
-      };
-
-      requestAnimationFrame(animationFrame);
+      }, 1000);
     }
   });
 
@@ -303,7 +346,7 @@ function Receiver(props: {
 
 function App() {
   const [count, setCount] = createSignal(0);
-  const [isPlaying, setIsPlaying] = createSignal(false);
+  const [isPlaying, setIsPlaying] = createSignal(true);
 
   const [songTitle, setSongTitle] = createSignal<string>('—');
   const [songArtist, setSongArtist] = createSignal<string>('');
@@ -367,8 +410,6 @@ function App() {
   }
 
   createEffect(async () => {
-    console.log(volumeSlider);
-
     const metadata = await musicMetadata.fetchFromUrl('Waitin  for the Bus.flac', {});
 
     setSongTitle(metadata.common.title);
