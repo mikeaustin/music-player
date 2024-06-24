@@ -1,10 +1,11 @@
-import { JSX, createEffect, createSignal, splitProps } from 'solid-js';
+import { ComponentProps, JSX, JSXElement, createEffect, createSignal, splitProps } from 'solid-js';
 import * as musicMetadata from 'music-metadata-browser';
 import { Buffer } from 'buffer';
 import process from 'process';
 
 import './App.css';
 
+import datTape from './assets/dat-tape.jpg';
 import styles from './App.module.css';
 
 if (typeof window !== "undefined" && typeof window.Buffer === "undefined") {
@@ -94,6 +95,25 @@ function Dial(props: {
 
 const lcdBackground = 'no-repeat linear-gradient(180deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px)';
 
+function Component(props: {
+  children: JSXElement;
+  style?: JSX.CSSProperties; // ComponentProps<'div'>['style']
+}) {
+  // const [local, rest] = splitProps(props, ['style']);
+
+  return (
+    <div class="flex flex-col" style={props.style}>
+      <div class="flex flex-col">
+        {props.children}
+      </div>
+      <div style={{ padding: '0 75px' }} class="flex justify-between">
+        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
+        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
+      </div>
+    </div>
+  );
+}
+
 function DATPlayer(props: {
   songTitle?: string;
   songArtist?: string;
@@ -105,7 +125,20 @@ function DATPlayer(props: {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
 
   return (
-    <div>
+    <Component style={{ position: 'relative' }}>
+      <div
+        style={{
+          position: 'absolute',
+          top: '25px',
+          right: '40px',
+          width: '203px',
+          height: '147px',
+          transform: 'rotate(180deg)',
+          // background: `-6px -34px / 216px 216px url(${datTape})`,
+          opacity: 0.05,
+        }}
+      />
+
       <div
         style={{
           width: '1400px',
@@ -141,7 +174,7 @@ function DATPlayer(props: {
         </div>
         <div class="flex-1" />
         <div class="flex" style={{ padding: '25px 35px' }}>
-          <div class="flex" style={{ "align-items": 'flex-start', width: '270px', border: '2px solid black', padding: '20px 60px 0px 60px' }}>
+          <div class="flex" style={{ "align-items": 'flex-start', width: '210px', border: '2px solid black', padding: '25px 35px 0px 35px' }}>
             <div class="flex flex-1 justify-between" style={{ background: 'black', padding: '10px' }}>
               <TapeGear />
               <TapeGear />
@@ -149,11 +182,7 @@ function DATPlayer(props: {
           </div>
         </div>
       </div>
-      <div style={{ padding: '0 75px' }} class="flex justify-between">
-        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
-        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
-      </div>
-    </div>
+    </Component>
   );
 }
 
@@ -251,27 +280,13 @@ function Equalizer(props: {
   });
 
   return (
-    <div>
+    <Component>
       <div style={{ width: '1400px', xheight: '240px', background: 'url(metal.png) no-repeat', border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)' }} class="flex flex-row">
         <div style={{ padding: '25px 35px' }}>
           <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
         </div>
         <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
           <canvas ref={lcdRef} height="65px" />
-          {/* <div class="flex flex-col text-sky-400" style={{ gap: '25px', visibility: !isPowerOn() ? 'hidden' : undefined }}>
-            <div class="text-xl" style={{ 'line-height': 1 }}>{props.bitsPerSample} BIT &nbsp; 96 KHZ</div>
-            <div class="flex flex-col" style={{ gap: '5px' }}>
-              <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>{props.songTitle}</div>
-              <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis', opacity: 0.5 }}>{props.songArtist} — {props.albumTitle}</div>
-            </div>
-            <div class="flex flex-col" style={{ gap: '10px' }}>
-              <div class="bg-sky-400" style={{ height: '2px' }} />
-              <div class="flex justify-between">
-                <div style={{ 'line-height': 1 }}>0:00</div>
-                <div style={{ 'line-height': 1 }}>{Math.floor(props.songDuration / 60)}:{`${Math.floor(props.songDuration % 60)}`.padStart(2, '0')}</div>
-              </div>
-            </div>
-          </div> */}
         </div>
         <div class="flex flex-col" style={{ padding: '25px 35px', gap: '20px' }}>
           <div>
@@ -286,11 +301,7 @@ function Equalizer(props: {
           </div>
         </div>
       </div>
-      <div style={{ padding: '0 75px' }} class="flex justify-between">
-        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
-        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
-      </div>
-    </div>
+    </Component>
   );
 }
 
@@ -306,7 +317,7 @@ function Receiver(props: {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
 
   return (
-    <div>
+    <Component>
       <div style={{ width: '1400px', height: '240px', background: 'url(metal.png) no-repeat', border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)' }} class="flex flex-row">
         <div style={{ padding: '25px 35px' }}>
           <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
@@ -336,26 +347,20 @@ function Receiver(props: {
           <Dial size={150} onValueChange={props.onVolumeChange} />
         </div>
       </div>
-      <div style={{ padding: '0 75px' }} class="flex justify-between">
-        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
-        <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
-      </div>
-    </div>
+    </Component>
   );
 }
 
 function App() {
-  const [count, setCount] = createSignal(0);
   const [isPlaying, setIsPlaying] = createSignal(true);
 
   const [songTitle, setSongTitle] = createSignal<string>('—');
   const [songArtist, setSongArtist] = createSignal<string>('');
   const [albumTitle, setAlbumTitle] = createSignal<string>(' ');
+  const [albumImage, setAlbumImage] = createSignal<string>('x');
 
   const [bitsPerSample, setBitsPerSample] = createSignal<number>();
   const [songDuration, setSongDuration] = createSignal<number>();
-
-  let volumeSlider: HTMLInputElement;
 
   let audioContext: AudioContext;
   let track: MediaElementAudioSourceNode;
@@ -418,7 +423,13 @@ function App() {
     setBitsPerSample(metadata.format.bitsPerSample);
     setSongDuration(metadata.format.duration);
 
-    console.log(metadata);
+
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      setAlbumImage(reader.result);
+    });
+
+    reader.readAsDataURL(new Blob([metadata.common.picture[0].data], { type: 'image/jpeg' }));
   });
 
   const handleVolumeValueChange = (volume: number) => {
@@ -429,6 +440,8 @@ function App() {
     <>
       <audio src="Waitin  for the Bus.flac"></audio>
       <div style={{ flex: 1 }} />
+      {console.log('>>>', albumImage())}
+      <img src={albumImage()} width={500} height={500} style={{ "margin-bottom": '20px' }} />
       <DATPlayer
         songTitle={songTitle()}
         songArtist={songArtist()}
