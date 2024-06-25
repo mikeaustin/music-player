@@ -99,10 +99,10 @@ function Component(props: {
   children: JSXElement;
   style?: JSX.CSSProperties; // ComponentProps<'div'>['style']
 }) {
-  // const [local, rest] = splitProps(props, ['style']);
+  const [local, rest] = splitProps(props, ['children', 'style']);
 
   return (
-    <div class="flex flex-col" style={props.style}>
+    <div class="flex flex-col" style={props.style} {...rest}>
       <div class="flex flex-col">
         {props.children}
       </div>
@@ -124,8 +124,22 @@ function DATPlayer(props: {
 }) {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
 
+  const handleDrop = (event) => {
+    event.preventDefault();
+
+    const file = event.dataTransfer.items[0].getAsFile();
+
+    console.log(file);
+  };
+
+  const handleDragOver = (event) => {
+    // console.log(event);
+
+    event.preventDefault();
+  };
+
   return (
-    <Component style={{ position: 'relative' }}>
+    <Component style={{ position: 'relative' }} onDrop={handleDrop} onDragOver={handleDragOver}>
       <div
         style={{
           position: 'absolute',
@@ -440,8 +454,7 @@ function App() {
     <>
       <audio src="Waitin  for the Bus.flac"></audio>
       <div style={{ flex: 1 }} />
-      {console.log('>>>', albumImage())}
-      <img src={albumImage()} width={500} height={500} style={{ "margin-bottom": '20px' }} />
+      <img src={albumImage()} width={256} height={256} style={{ "margin-bottom": '20px' }} />
       <DATPlayer
         songTitle={songTitle()}
         songArtist={songArtist()}
