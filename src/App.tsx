@@ -30,7 +30,7 @@ function PowerButton(props: {
 function TapeGear(props: {
 }) {
   return (
-    <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', xanimation: `${styles.spin} 5s infinite linear` }}>
+    <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: `${styles.spin} 5s infinite linear` }}>
       <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(0deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
       <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(60deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
       <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(120deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
@@ -194,14 +194,14 @@ function DATPlayer(props: {
         </div>
       </div>
       <div style={{ padding: '25px 35px' }}>
-        <button style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px', padding: '10px', background: 'linear-gradient(180deg, hsl(0, 0%, 5%), hsl(0, 0%, 3%))' }} class="flex justify-center bg-neutral-950 active:brightness-75 group" onClick={() => props.setIsPowerOn(!props.isPowerOn)}>
+        <button style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px', padding: '10px', background: 'linear-gradient(180deg, hsl(0, 0%, 5%), hsl(0, 0%, 3%))' }} class="flex justify-center bg-neutral-950 active:brightness-75 group" onClick={() => props.onPlayPause?.()}>
           ▶
         </button>
       </div>
       <div class="flex-1" />
       <div class="flex" style={{ padding: '0 35px' }}>
-        <div class="flex" style={{ background: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 45px 0px 45px' }}>
-          <div class="flex flex-1 justify-between" style={{ background: lcdBackground, "background-position": '0px -10px', padding: '15px 20px', "border-radius": '3px', border: '2px solid black' }}>
+        <div class="flex" style={{ background: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 30px 0px 30px' }}>
+          <div class="flex flex-1 justify-between" style={{ background: lcdBackground, "background-position": '0px 0px', padding: '15px 35px', "border-radius": '3px', border: '2px solid black' }}>
             <TapeGear />
             <TapeGear />
           </div>
@@ -361,8 +361,8 @@ function Receiver(props: {
           </div> */}
       </div>
       <div style={{ padding: '25px' }}>
-        <div style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px' }} class="flex justify-center items-center bg-neutral-950" onClick={() => props.onPlayPause?.()}>
-        </div>
+        {/* <div style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px' }} class="flex justify-center items-center bg-neutral-950" onClick={() => props.onPlayPause?.()}>
+        </div> */}
       </div>
       <div class="flex-1" />
       <div style={{ padding: '25px 35px' }}>
