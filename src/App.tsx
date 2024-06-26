@@ -38,6 +38,17 @@ function TapeGear(props: {
       <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(240deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
       <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(300deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
       <div style={{ position: 'absolute', width: '23px', height: '23px', left: 'calc(50%)', top: 'calc(50%)', transform: 'translate(-50%, -50%)', background: 'black', "border-radius": '9999px' }} />
+
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(0deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(45deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(90deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(135deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(180deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(225deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(270deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(315deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+
+      <div style={{ position: 'absolute', top: '-10px', left: '-10px', width: '49px', height: '49px', border: '2px solid hsl(0, 0%, 50%)', "border-radius": '9999px' }} />
     </div>
   );
 }
@@ -161,7 +172,8 @@ function DATPlayer(props: {
 
   return (
     <Component onDrop={handleDrop} onDragOver={handleDragOver}>
-      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '50px', opacity: 0.1 }} /> */}
+      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '49px', opacity: 0.1 }} /> */}
+
       <div style={{ padding: '25px 35px' }}>
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
       </div>
@@ -188,8 +200,8 @@ function DATPlayer(props: {
       </div>
       <div class="flex-1" />
       <div class="flex" style={{ padding: '0 35px' }}>
-        <div class="flex" style={{ background: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '45px 50px 0px 50px' }}>
-          <div class="flex flex-1 justify-between" style={{ background: lcdBackground, "background-position": '0px -10px', padding: '10px 20px', "border-radius": '3px', border: '2px solid black' }}>
+        <div class="flex" style={{ background: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 45px 0px 45px' }}>
+          <div class="flex flex-1 justify-between" style={{ background: lcdBackground, "background-position": '0px -10px', padding: '15px 20px', "border-radius": '3px', border: '2px solid black' }}>
             <TapeGear />
             <TapeGear />
           </div>
