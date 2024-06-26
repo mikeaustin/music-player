@@ -30,25 +30,29 @@ function PowerButton(props: {
 function TapeGear(props: {
 }) {
   return (
-    <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: `${styles.spin} 5s infinite linear` }}>
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(0deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(60deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(120deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(180deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(240deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(300deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', width: '23px', height: '23px', left: 'calc(50%)', top: 'calc(50%)', transform: 'translate(-50%, -50%)', background: 'black', "border-radius": '9999px' }} />
+    <div style={{ position: 'relative' }}>
+      <div style={{ position: 'absolute', top: '-27px', left: '-27px', width: '89px', height: '89px', xbackground: 'red', border: '20px solid hsl(0, 0%, 5%)', "border-radius": '9999px' }} />
 
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(0deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(45deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(90deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(135deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(180deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(225deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(270deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(315deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: `${styles.spin} 10s infinite linear` }}>
+        <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(0deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(60deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(120deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(180deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(240deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(300deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', width: '23px', height: '23px', left: 'calc(50%)', top: 'calc(50%)', transform: 'translate(-50%, -50%)', background: 'black', "border-radius": '9999px' }} />
 
-      <div style={{ position: 'absolute', top: '-10px', left: '-10px', width: '49px', height: '49px', border: '2px solid hsl(0, 0%, 50%)', "border-radius": '9999px' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(0deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(45deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(90deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(135deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(180deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(225deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(270deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+        <div style={{ position: 'absolute', left: 'calc(50% - 1px)', top: 'calc(50% - 3px)', transform: 'rotateZ(315deg) translate(0, -20px)', width: '2px', height: '6px', background: 'hsl(0, 0%, 50%)' }} />
+
+        <div style={{ position: 'absolute', top: '-10px', left: '-10px', width: '49px', height: '49px', border: '2px solid hsl(0, 0%, 50%)', "border-radius": '9999px' }} />
+      </div>
     </div>
   );
 }
@@ -200,11 +204,33 @@ function DATPlayer(props: {
       </div>
       <div class="flex-1" />
       <div class="flex" style={{ padding: '0 35px' }}>
-        <div class="flex" style={{ background: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 30px 0px 30px' }}>
+        <div class="flex" style={{ position: 'relative', xbackground: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 30px 0px 30px' }}>
           <div class="flex flex-1 justify-between" style={{ background: lcdBackground, "background-position": '0px 0px', padding: '15px 35px', "border-radius": '3px', border: '2px solid black' }}>
             <TapeGear />
             <TapeGear />
           </div>
+          <div
+            xstyle={{
+              position: 'absolute',
+              inset: 0,
+              background: 'url(metal.png)',
+              'clip-path': `
+                polygon(evenodd,
+                  /* outer rect */
+                  0 0, /* top - left */
+                  100% 0, /* top - right */
+                  100% 100%, /* bottom - right */
+                  0% 100%, /* bottom - left */
+                  0 0, /* and top - left again */
+                  /* do the same with inner rect */
+                  calc(0% + 20px) calc(0% + 40px),
+                  calc(100% - 20px) calc(0% + 40px),
+                  calc(100% - 20px) calc(110px - 3px),
+                  calc(0% + 20px) calc(110px - 3px),
+                  calc(0% + 20px) calc(0% + 40px)
+                )
+            `
+            }} />
         </div>
       </div>
     </Component>
@@ -412,7 +438,7 @@ function App() {
 
       track
         .connect(gainNode)
-        .connect(biquadFilterNode)
+        // .connect(biquadFilterNode)
         .connect(audioContext.destination);
     }
 
