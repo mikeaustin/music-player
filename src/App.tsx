@@ -76,24 +76,34 @@ function Dial(props: {
   };
 
   return (
-    <div
-      class="flex border rounded-full border-neutral-900 xring-2 ring-black justify-center shadow-lg"
-      style={{
-        width: `${props.size}px`,
-        height: `${props.size}px`,
-        background: 'radial-gradient(hsl(0, 0%, 2%), hsl(0, 0%, 5%))', 'box-shadow': '0 5px 10px hsla(0, 0%, 0%, 0.5), 0 0 0 2px hsl(0, 0%, 0%)',
-        transform: `rotate(${value() * 270 - 135}deg)`
-      }}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-    >
-      <div class="bg-sky-400" style={{ width: '3px', height: '20px' }} />
+    <div class="flex" style={{ position: 'relative' }}>
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          "border-radius": '9999px',
+          'box-shadow': '0 5px 10px hsla(0, 0%, 0%, 0.5), 0 0 0 2px hsl(0, 0%, 0%)',
+        }}
+      />
+      <div
+        class="flex border rounded-full border-neutral-900 justify-center"
+        style={{
+          width: `${props.size}px`,
+          height: `${props.size}px`,
+          background: 'radial-gradient(hsl(0, 0%, 2%), hsl(0, 0%, 5%))',
+          transform: `rotate(${value() * 270 - 135}deg)`
+        }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+      >
+        <div class="bg-sky-400" style={{ width: '3px', height: '20px' }} />
+      </div>
     </div>
   );
 }
 
-const lcdBackground = 'no-repeat linear-gradient(180deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px)';
+const lcdBackground = 'no-repeat 0 0 / 100% 300px linear-gradient(180deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px)';
 
 function Component(props: {
   children: JSXElement;
@@ -178,8 +188,8 @@ function DATPlayer(props: {
       </div>
       <div class="flex-1" />
       <div class="flex" style={{ padding: '0 35px' }}>
-        <div class="flex" style={{ background: lcdBackground, "align-items": 'flex-start', width: '270px', border: '2px solid black', padding: '45px 60px 0px 60px' }}>
-          <div class="flex flex-1 justify-between" style={{ background: 'black', padding: '10px' }}>
+        <div class="flex" style={{ background: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '45px 50px 0px 50px' }}>
+          <div class="flex flex-1 justify-between" style={{ background: lcdBackground, "background-position": '0px -10px', padding: '10px 20px', "border-radius": '3px', border: '2px solid black' }}>
             <TapeGear />
             <TapeGear />
           </div>
