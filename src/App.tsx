@@ -81,7 +81,7 @@ function Dial(props: {
       style={{
         width: `${props.size}px`,
         height: `${props.size}px`,
-        background: 'radial-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 5%))', 'box-shadow': '0 5px 10px hsla(0, 0%, 0%, 0.5), 0 0 0 2px hsl(0, 0%, 0%)',
+        background: 'radial-gradient(hsl(0, 0%, 2%), hsl(0, 0%, 5%))', 'box-shadow': '0 5px 10px hsla(0, 0%, 0%, 0.5), 0 0 0 2px hsl(0, 0%, 0%)',
         transform: `rotate(${value() * 270 - 135}deg)`
       }}
       onPointerDown={handlePointerDown}
@@ -102,8 +102,19 @@ function Component(props: {
   const [local, rest] = splitProps(props, ['children', 'style']);
 
   return (
-    <div class="flex flex-col" style={props.style} {...rest}>
-      <div class="flex flex-col">
+    <div class="flex flex-col">
+      <div
+        class="flex flex-row"
+        style={{
+          position: 'relative',
+          width: '1400px',
+          background: 'url(metal.png) no-repeat',
+          // background: 'repeat 0 0 / 100% 1px linear-gradient(hsl(0, 0%, 0%) 0px, hsl(0, 0%, 5%) 1px, hsl(0, 0%, 0%) 0.5px)',
+          border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)',
+          ...props.style
+        }}
+        {...rest}
+      >
         {props.children}
       </div>
       <div style={{ padding: '0 75px' }} class="flex justify-between">
@@ -139,7 +150,7 @@ function DATPlayer(props: {
   };
 
   return (
-    <Component style={{ position: 'relative' }} onDrop={handleDrop} onDragOver={handleDragOver}>
+    <Component onDrop={handleDrop} onDragOver={handleDragOver}>
       <div
         style={{
           position: 'absolute',
@@ -151,48 +162,38 @@ function DATPlayer(props: {
           // background: `-6px -34px / 216px 216px url(${datTape})`,
           opacity: 0.05,
         }}
-      />
-
-      <div
-        style={{
-          width: '1400px',
-          background: 'url(metal.png) no-repeat',
-          // background: 'repeat 0 0 / 100% 1px linear-gradient(hsl(0, 0%, 0%) 0px, hsl(0, 0%, 5%) 1px, hsl(0, 0%, 0%) 0.5px)',
-          border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)'
-        }}
         class="flex flex-row"
-      >
-        <div style={{ padding: '25px 35px' }}>
-          <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
-        </div>
-        <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
-          <div class="flex flex-col text-sky-400" style={{ gap: '25px', visibility: !isPowerOn() ? 'hidden' : undefined }}>
-            <div class="text-xl" style={{ 'line-height': 1 }}>{props.bitsPerSample} BIT &nbsp; 96 KHZ</div>
-            <div class="flex flex-col" style={{ gap: '5px' }}>
-              <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>{props.songTitle}</div>
-              <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis', opacity: 0.5 }}>{props.songArtist} — {props.albumTitle}</div>
-            </div>
-            <div class="flex flex-col" style={{ gap: '10px' }}>
-              <div class="bg-sky-400" style={{ height: '2px' }} />
-              <div class="flex justify-between">
-                <div style={{ 'line-height': 1 }}>0:00</div>
-                <div style={{ 'line-height': 1 }}>{Math.floor(props.songDuration / 60)}:{`${Math.floor(props.songDuration % 60)}`.padStart(2, '0')}</div>
-              </div>
+      />
+      <div style={{ padding: '25px 35px' }}>
+        <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
+      </div>
+      <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
+        <div class="flex flex-col text-sky-400" style={{ gap: '25px', visibility: !isPowerOn() ? 'hidden' : undefined }}>
+          <div class="text-xl" style={{ 'line-height': 1 }}>{props.bitsPerSample} BIT &nbsp; 96 KHZ</div>
+          <div class="flex flex-col" style={{ gap: '5px' }}>
+            <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>{props.songTitle}</div>
+            <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis', opacity: 0.5 }}>{props.songArtist} — {props.albumTitle}</div>
+          </div>
+          <div class="flex flex-col" style={{ gap: '10px' }}>
+            <div class="bg-sky-400" style={{ height: '2px' }} />
+            <div class="flex justify-between">
+              <div style={{ 'line-height': 1 }}>0:00</div>
+              <div style={{ 'line-height': 1 }}>{Math.floor(props.songDuration / 60)}:{`${Math.floor(props.songDuration % 60)}`.padStart(2, '0')}</div>
             </div>
           </div>
         </div>
-        <div style={{ padding: '25px 35px' }}>
-          <div style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px' }} class="flex justify-center items-center bg-neutral-950" onClick={() => props.onPlayPause?.()}>
-            ▶
-          </div>
-        </div>
-        <div class="flex-1" />
-        <div class="flex" style={{ padding: '25px 35px' }}>
-          <div class="flex" style={{ "align-items": 'flex-start', width: '210px', border: '2px solid black', padding: '25px 35px 0px 35px' }}>
-            <div class="flex flex-1 justify-between" style={{ background: 'black', padding: '10px' }}>
-              <TapeGear />
-              <TapeGear />
-            </div>
+      </div>
+      <div style={{ padding: '25px 35px' }}>
+        <button style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px', padding: '10px', background: 'linear-gradient(180deg, hsl(0, 0%, 5%), hsl(0, 0%, 3%))' }} class="flex justify-center bg-neutral-950 active:brightness-75 group" onClick={() => props.setIsPowerOn(!props.isPowerOn)}>
+          ▶
+        </button>
+      </div>
+      <div class="flex-1" />
+      <div class="flex" style={{ padding: '25px 35px' }}>
+        <div class="flex" style={{ "align-items": 'flex-start', width: '210px', border: '2px solid black', padding: '25px 35px 0px 35px' }}>
+          <div class="flex flex-1 justify-between" style={{ background: 'black', padding: '10px' }}>
+            <TapeGear />
+            <TapeGear />
           </div>
         </div>
       </div>
@@ -295,24 +296,22 @@ function Equalizer(props: {
 
   return (
     <Component>
-      <div style={{ width: '1400px', xheight: '240px', background: 'url(metal.png) no-repeat', border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)' }} class="flex flex-row">
-        <div style={{ padding: '25px 35px' }}>
-          <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
+      <div style={{ padding: '25px 35px' }}>
+        <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
+      </div>
+      <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
+        <canvas ref={lcdRef} height="65px" />
+      </div>
+      <div class="flex flex-col" style={{ padding: '25px 35px', gap: '20px' }}>
+        <div>
+          hello
         </div>
-        <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
-          <canvas ref={lcdRef} height="65px" />
-        </div>
-        <div class="flex flex-col" style={{ padding: '25px 35px', gap: '20px' }}>
-          <div>
-            hello
-          </div>
-          <div class="flex" style={{ gap: '35px' }}>
-            <Dial size={75} />
-            <Dial size={75} />
-            <Dial size={75} />
-            <Dial size={75} />
-            <Dial size={75} />
-          </div>
+        <div class="flex" style={{ gap: '35px' }}>
+          <Dial size={75} />
+          <Dial size={75} />
+          <Dial size={75} />
+          <Dial size={75} />
+          <Dial size={75} />
         </div>
       </div>
     </Component>
@@ -332,12 +331,11 @@ function Receiver(props: {
 
   return (
     <Component>
-      <div style={{ width: '1400px', height: '240px', background: 'url(metal.png) no-repeat', border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)' }} class="flex flex-row">
-        <div style={{ padding: '25px 35px' }}>
-          <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
-        </div>
-        <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
-          {/* <div class="flex flex-col text-sky-400" style={{ gap: '25px', visibility: !isPowerOn() ? 'hidden' : undefined }}>
+      <div style={{ padding: '25px 35px' }}>
+        <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
+      </div>
+      <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
+        {/* <div class="flex flex-col text-sky-400" style={{ gap: '25px', visibility: !isPowerOn() ? 'hidden' : undefined }}>
             <div class="text-xl" style={{ 'line-height': 1 }}>{props.bitsPerSample} BIT &nbsp; 96 KHZ</div>
             <div class="flex flex-col" style={{ gap: '5px' }}>
               <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>{props.songTitle}</div>
@@ -351,15 +349,14 @@ function Receiver(props: {
               </div>
             </div>
           </div> */}
+      </div>
+      <div style={{ padding: '25px' }}>
+        <div style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px' }} class="flex justify-center items-center bg-neutral-950" onClick={() => props.onPlayPause?.()}>
         </div>
-        <div style={{ padding: '25px' }}>
-          <div style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px' }} class="flex justify-center items-center bg-neutral-950" onClick={() => props.onPlayPause?.()}>
-          </div>
-        </div>
-        <div class="flex-1" />
-        <div style={{ padding: '25px 35px' }}>
-          <Dial size={150} onValueChange={props.onVolumeChange} />
-        </div>
+      </div>
+      <div class="flex-1" />
+      <div style={{ padding: '25px 35px' }}>
+        <Dial size={150} onValueChange={props.onVolumeChange} />
       </div>
     </Component>
   );
@@ -454,7 +451,7 @@ function App() {
     <>
       <audio src="Waitin  for the Bus.flac"></audio>
       <div style={{ flex: 1 }} />
-      <img src={albumImage()} width={256} height={256} style={{ "margin-bottom": '20px' }} />
+      {/* <img src={albumImage()} width={256} height={256} style={{ "margin-bottom": '20px' }} /> */}
       <DATPlayer
         songTitle={songTitle()}
         songArtist={songArtist()}
