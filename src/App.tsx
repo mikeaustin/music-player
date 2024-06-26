@@ -5,7 +5,7 @@ import process from 'process';
 
 import './App.css';
 
-import datTape from './assets/dat-tape.jpg';
+import datTape from './assets/dat-tape.png';
 import styles from './App.module.css';
 
 if (typeof window !== "undefined" && typeof window.Buffer === "undefined") {
@@ -30,14 +30,14 @@ function PowerButton(props: {
 function TapeGear(props: {
 }) {
   return (
-    <div style={{ position: 'relative', width: '30px', height: '30px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: `${styles.spin} 5s infinite linear` }}>
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2px)', transform: 'rotateZ(0deg) translate(0, -10px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2px)', transform: 'rotateZ(60deg) translate(0, -10px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2px)', transform: 'rotateZ(120deg) translate(0, -10px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2px)', transform: 'rotateZ(180deg) translate(0, -10px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2px)', transform: 'rotateZ(240deg) translate(0, -10px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2px)', transform: 'rotateZ(300deg) translate(0, -10px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
-      <div style={{ position: 'absolute', width: '17px', height: '17px', left: 'calc(50%)', top: 'calc(50%)', transform: 'translate(-50%, -50%)', background: 'black', "border-radius": '9999px' }} />
+    <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', xanimation: `${styles.spin} 5s infinite linear` }}>
+      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(0deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(60deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(120deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(180deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(240deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(300deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
+      <div style={{ position: 'absolute', width: '23px', height: '23px', left: 'calc(50%)', top: 'calc(50%)', transform: 'translate(-50%, -50%)', background: 'black', "border-radius": '9999px' }} />
     </div>
   );
 }
@@ -151,19 +151,7 @@ function DATPlayer(props: {
 
   return (
     <Component onDrop={handleDrop} onDragOver={handleDragOver}>
-      <div
-        style={{
-          position: 'absolute',
-          top: '25px',
-          right: '40px',
-          width: '203px',
-          height: '147px',
-          transform: 'rotate(180deg)',
-          // background: `-6px -34px / 216px 216px url(${datTape})`,
-          opacity: 0.05,
-        }}
-        class="flex flex-row"
-      />
+      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '50px', opacity: 0.1 }} /> */}
       <div style={{ padding: '25px 35px' }}>
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
       </div>
@@ -189,8 +177,8 @@ function DATPlayer(props: {
         </button>
       </div>
       <div class="flex-1" />
-      <div class="flex" style={{ padding: '25px 35px' }}>
-        <div class="flex" style={{ "align-items": 'flex-start', width: '210px', border: '2px solid black', padding: '25px 35px 0px 35px' }}>
+      <div class="flex" style={{ padding: '0 35px' }}>
+        <div class="flex" style={{ background: lcdBackground, "align-items": 'flex-start', width: '270px', border: '2px solid black', padding: '45px 60px 0px 60px' }}>
           <div class="flex flex-1 justify-between" style={{ background: 'black', padding: '10px' }}>
             <TapeGear />
             <TapeGear />
