@@ -242,6 +242,7 @@ function DATPlayer(props: {
 }
 
 function Equalizer(props: {
+  isPlaying: boolean;
   songTitle?: string;
   songArtist?: string;
   albumTitle?: string;
@@ -302,6 +303,12 @@ function Equalizer(props: {
       setTimeout(() => {
         canvasInterval = setInterval(() => {
           if (!context) {
+            return;
+          }
+
+          if (!props.isPlaying) {
+            context.clearRect(0, 0, 546, 118);
+
             return;
           }
 
@@ -391,7 +398,7 @@ function Receiver(props: {
 
             const max = dataArray.reduce((max, value) => Math.max(max, value));
 
-            currentMax = (currentMax * 2 + max) / 3;
+            currentMax = (currentMax * 1 + max) / 2;
 
             context.clearRect(0, 0, 546, 150);
 
@@ -538,6 +545,7 @@ function App() {
         onPlayPause={play}
       />
       <Equalizer
+        isPlaying={isPlaying()}
         analyserNode={analyserNode()}
       />
       <Receiver
