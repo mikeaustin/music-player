@@ -176,8 +176,6 @@ function DATPlayer(props: {
 
   return (
     <Component onDrop={handleDrop} onDragOver={handleDragOver}>
-      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '49px', opacity: 0.5 }} /> */}
-
       <div style={{ padding: '25px 35px' }}>
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
       </div>
@@ -235,6 +233,7 @@ function DATPlayer(props: {
           <div style={{ position: 'absolute', left: '30px', top: '40px', width: '205px', height: '65px', background: 'hsla(0, 0%, 0%, 0.1)', border: '2px solid black', "border-radius": '3px' }} />
         </div>
       </div>
+      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '49px', opacity: 0.5 }} /> */}
     </Component>
   );
 }
