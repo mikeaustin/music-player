@@ -31,7 +31,7 @@ function TapeGear(props: {
 }) {
   return (
     <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '-27px', left: '-27px', width: '89px', height: '89px', xbackground: 'red', border: '20px solid hsl(0, 0%, 5%)', "border-radius": '9999px' }} />
+      <div style={{ position: 'absolute', top: '-27px', left: '-27px', width: '89px', height: '89px', xbackground: 'red', border: '20px solid hsl(0, 0%, 4%)', "border-radius": '9999px' }} />
 
       <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: `${styles.spin} 10s infinite linear` }}>
         <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(0deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
@@ -176,7 +176,7 @@ function DATPlayer(props: {
 
   return (
     <Component onDrop={handleDrop} onDragOver={handleDragOver}>
-      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '49px', opacity: 0.1 }} /> */}
+      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '49px', opacity: 0.5 }} /> */}
 
       <div style={{ padding: '25px 35px' }}>
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
@@ -204,13 +204,13 @@ function DATPlayer(props: {
       </div>
       <div class="flex-1" />
       <div class="flex" style={{ padding: '0 35px' }}>
-        <div class="flex" style={{ position: 'relative', xbackground: 'url(metal.png)', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 30px 0px 30px' }}>
-          <div class="flex flex-1 justify-between" style={{ background: lcdBackground, "background-position": '0px 0px', padding: '15px 35px', "border-radius": '3px', border: '2px solid black' }}>
+        <div class="flex" style={{ position: 'relative', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 30px 0px 30px', background: 'black' }}>
+          <div class="flex flex-1 justify-between" style={{ padding: '15px 35px' }}>
             <TapeGear />
             <TapeGear />
           </div>
           <div
-            xstyle={{
+            style={{
               position: 'absolute',
               inset: 0,
               background: 'url(metal.png)',
@@ -225,12 +225,14 @@ function DATPlayer(props: {
                   /* do the same with inner rect */
                   calc(0% + 20px) calc(0% + 40px),
                   calc(100% - 20px) calc(0% + 40px),
-                  calc(100% - 20px) calc(110px - 3px),
-                  calc(0% + 20px) calc(110px - 3px),
+                  calc(100% - 20px) calc(105px),
+                  calc(0% + 20px) calc(105px),
                   calc(0% + 20px) calc(0% + 40px)
                 )
             `
-            }} />
+            }}
+          />
+          <div style={{ position: 'absolute', left: '30px', top: '40px', width: '205px', height: '65px', background: 'hsla(0, 0%, 0%, 0.1)', border: '2px solid black', "border-radius": '3px' }} />
         </div>
       </div>
     </Component>
