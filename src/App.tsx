@@ -119,6 +119,7 @@ function Dial(props: {
 }
 
 const lcdBackground = 'no-repeat 0 0 / 100% 300px linear-gradient(180deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px)';
+const lcdBackground2 = 'no-repeat 0 0 / 100% 300px linear-gradient(180deg, hsla(0, 0%, 0%, 0.0), hsla(0, 0%, 100%, 0.05) 50px, hsla(0, 0%, 0%, 0.0) 150px)';
 
 function Component(props: {
   children: JSXElement;
@@ -221,19 +222,19 @@ function DATPlayer(props: {
                   0% 100%, /* bottom - left */
                   0 0, /* and top - left again */
                   /* do the same with inner rect */
-                  calc(0% + 20px) calc(0% + 40px),
-                  calc(100% - 20px) calc(0% + 40px),
-                  calc(100% - 20px) calc(105px),
-                  calc(0% + 20px) calc(105px),
-                  calc(0% + 20px) calc(0% + 40px)
+                  calc(0% + 25px) calc(0% + 40px),
+                  calc(100% - 25px) calc(0% + 40px),
+                  calc(100% - 25px) calc(105px),
+                  calc(0% + 25px) calc(105px),
+                  calc(0% + 25px) calc(0% + 40px)
                 )
             `
             }}
           />
-          <div style={{ position: 'absolute', left: '30px', top: '40px', width: '205px', height: '65px', background: 'hsla(0, 0%, 0%, 0.1)', border: '2px solid black', "border-radius": '3px' }} />
+          <div style={{ position: 'absolute', left: '25px', top: '40px', width: '215px', height: '65px', background: lcdBackground2, border: '2px solid black', "border-radius": '3px' }} />
         </div>
       </div>
-      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '49px', opacity: 0.5 }} /> */}
+      {/* <img src={datTape} style={{ position: 'absolute', transform: 'rotate(180deg)', height: '177px', top: '10px', right: '49px', opacity: 0.1 }} /> */}
     </Component>
   );
 }
