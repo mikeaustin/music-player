@@ -255,7 +255,6 @@ function Equalizer(props: {
 
   let lcdRef: HTMLCanvasElement;
   let frequencies = Array.from({ length: 20 }, () => 1.0);
-  let peakFrequencies = Array.from({ length: 20 }, () => 0.0);
   let canvasInterval: ReturnType<typeof setInterval>;
 
   createEffect(() => {
@@ -271,75 +270,73 @@ function Equalizer(props: {
       return;
     }
 
-    if (lcdRef) {
-      var context = lcdRef.getContext("2d");
+    if (!lcdRef) {
+      return;
+    }
 
-      if (context) {
-        context.fillStyle = '#38BDF8';
+    var context = lcdRef.getContext("2d");
 
-        for (let i = 0; i < frequencies.length; ++i) {
-          frequencies[i] = 1.0;
-        }
+    if (!context) {
+      return;
+    }
 
-        let interval = setInterval(() => {
-          context.clearRect(0, 0, 546, 118);
+    context.fillStyle = '#38BDF8';
 
-          for (let [index, freq] of frequencies.entries()) {
-            for (let i = 0; i < freq * 23; ++i) {
-              context.fillRect(index * 15, 66 - (i * 3), 10, 2);
-            }
-          }
+    for (let i = 0; i < frequencies.length; ++i) {
+      frequencies[i] = 1.0;
+    }
 
-          for (let i = 0; i < frequencies.length; ++i) {
-            frequencies[i] = frequencies[i] - (1 / 22);
-          }
+    const frequencyDataArray2 = props.analyserNode && new Uint8Array(props.analyserNode.frequencyBinCount);
 
-          if (frequencies[0] <= 0) {
-            clearInterval(interval);
-          }
-        }, 50);
+    // let interval = setInterval(() => {
+    //   if (!context) {
+    //     return;
+    //   }
+
+    //   context.clearRect(0, 0, 546, 118);
+
+    //   for (let [index, freq] of frequencies.entries()) {
+    //     for (let i = 0; i < freq * 23; ++i) {
+    //       context.fillRect(index * 15, 66 - (i * 3), 10, 2);
+    //     }
+    //   }
+
+    //   for (let i = 0; i < frequencies.length; ++i) {
+    //     frequencies[i] = frequencies[i] - (1 / 22);
+    //   }
+
+    //   if (frequencies[0] <= 0) {
+    //     clearInterval(interval);
+    //   }
+    // }, 50);
+
+    // setTimeout(() => {
+    canvasInterval = setInterval(() => {
+      if (!context || !frequencyDataArray2) {
+        return;
       }
 
-      setTimeout(() => {
-        canvasInterval = setInterval(() => {
-          if (!context) {
-            return;
-          }
+      if (!props.isPlaying) {
+        context.clearRect(0, 0, 546, 118);
 
-          if (!props.isPlaying) {
-            context.clearRect(0, 0, 546, 118);
+        return;
+      }
 
-            return;
-          }
+      props.analyserNode?.getByteFrequencyData(frequencyDataArray2);
 
-          for (let i = 0; i < 20; ++i) {
-            frequencies[i] = (frequencies[i] * 2 + Math.random()) / 3;
+      for (let i = 0; i < 20; ++i) {
+        frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor(i * i * (1 / (41000 / 48000)))] / 255) / 2;
+      }
 
-            // if (frequencies[i] > peakFrequencies[i]) {
-            //   peakFrequencies[i] = frequencies[i];
-            // }
-          }
+      context.clearRect(0, 0, 546, 118);
 
-          context.clearRect(0, 0, 546, 118);
-
-          for (let [index, freq] of frequencies.entries()) {
-            // context.fillRect(index * 15, 66 - (Math.floor(peakFrequencies[index] * 23 * 3)), 10, 2);
-
-            for (let i = 0; i < freq * 23; ++i) {
-              context.fillRect(index * 15, 66 - (i * 3), 10, 2);
-            }
-          }
-        }, 100);
-      }, 1500);
-
-      setInterval(() => {
-        for (let i = 0; i < 20; ++i) {
-          if (frequencies[i] < peakFrequencies[i]) {
-            peakFrequencies[i] = peakFrequencies[i] - 23 / 1;
-          }
+      for (let [index, freq] of frequencies.entries()) {
+        for (let i = 0; i < freq * (118 / 5); ++i) {
+          context.fillRect(index * 25, 118 - (i * 5), 20, 3);
         }
-      }, 1000);
-    }
+      }
+    }, 10);
+    // }, 1500);
   });
 
   return (
@@ -348,7 +345,7 @@ function Equalizer(props: {
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
       </div>
       <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
-        <canvas ref={lcdRef} height="65px" />
+        <canvas ref={lcdRef} width="546" height="118" />
       </div>
       <div class="flex flex-col" style={{ padding: '25px 35px', gap: '20px' }}>
         <div>
@@ -382,41 +379,38 @@ function Receiver(props: {
   let currentMax = 0.0;
 
   createEffect(() => {
-    if (lcdRef) {
-      var context = lcdRef.getContext("2d");
-
-      if (context) {
-        context.fillStyle = '#38BDF8';
-
-        context.fillRect(0, 0, 10, 2);
-
-        const dataArray = props.analyserNode && new Float32Array(props.analyserNode.frequencyBinCount);
-
-        setInterval(() => {
-          if (dataArray && context) {
-            props.analyserNode?.getFloatTimeDomainData(dataArray);
-
-            const max = dataArray.reduce((max, value) => Math.max(max, value));
-
-            currentMax = (currentMax * 1 + max) / 2;
-
-            context.clearRect(0, 0, 546, 150);
-
-            // for (let i = 0; i < currentMax * 30; ++i) {
-            //   context.fillRect(0 * 15, 150 - (i * 5), 20, 3);
-            // }
-
-            for (let volume = 0; volume < currentMax * (546 / 5 / 2); ++volume) {
-              context.fillRect(volume * 5, 0, 3, 20);
-              context.fillRect(volume * 5 + 546 / 2, 0, 3, 20);
-            }
-          }
-        }, 10);
-
-      }
-
+    if (!lcdRef) {
+      return;
     }
 
+    var context = lcdRef.getContext("2d");
+
+    if (!context) {
+      return;
+    }
+
+    context.fillStyle = '#38BDF8';
+
+    context.fillRect(0, 0, 10, 2);
+
+    const dataArray = props.analyserNode && new Float32Array(props.analyserNode.frequencyBinCount);
+
+    setInterval(() => {
+      if (dataArray && context) {
+        props.analyserNode?.getFloatTimeDomainData(dataArray);
+
+        const max = dataArray.reduce((max, value) => Math.max(max, value));
+
+        currentMax = (currentMax * 1 + max) / 2;
+
+        context.clearRect(0, 0, 546, 150);
+
+        for (let volume = 0; volume < currentMax * (546 / 5 / 2); ++volume) {
+          context.fillRect(volume * 5, 0, 3, 20);
+          context.fillRect(volume * 5 + 546 / 2, 0, 3, 20);
+        }
+      }
+    }, 10);
   });
 
   return (
@@ -472,7 +466,9 @@ function App() {
 
       gainNode = audioContext.createGain();
       biquadFilterNode = audioContext.createBiquadFilter();
-      setAnalyserNode(audioContext.createAnalyser());
+      const _ = audioContext.createAnalyser();
+      _.fftSize = 1024;
+      setAnalyserNode(_);
 
       console.log('gainNode.gain.maxValue', gainNode.gain.maxValue);
       console.log('biquadFilterNode.gain.maxValue', biquadFilterNode.gain.maxValue);
