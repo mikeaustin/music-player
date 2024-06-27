@@ -28,12 +28,13 @@ function PowerButton(props: {
 }
 
 function TapeGear(props: {
+  isPlaying: boolean;
 }) {
   return (
     <div style={{ position: 'relative' }}>
       <div style={{ position: 'absolute', top: '-27px', left: '-27px', width: '89px', height: '89px', xbackground: 'red', border: '20px solid hsl(0, 0%, 4%)', "border-radius": '9999px' }} />
 
-      <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: `${styles.spin} 10s infinite linear` }}>
+      <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: props.isPlaying ? `${styles.spin} 10s infinite linear` : undefined }}>
         <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(0deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
         <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(60deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
         <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(120deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
@@ -155,6 +156,7 @@ function DATPlayer(props: {
   songTitle?: string;
   songArtist?: string;
   albumTitle?: string;
+  isPlaying: boolean;
   bitsPerSample?: number;
   songDuration?: number;
   onPlayPause?: () => void;
@@ -205,8 +207,8 @@ function DATPlayer(props: {
       <div class="flex" style={{ padding: '0 35px' }}>
         <div class="flex" style={{ position: 'relative', "align-items": 'flex-start', width: '270px', 'border-left': '2px solid black', 'border-right': '2px solid black', padding: '40px 30px 0px 30px', background: 'black' }}>
           <div class="flex flex-1 justify-between" style={{ padding: '15px 35px' }}>
-            <TapeGear />
-            <TapeGear />
+            <TapeGear isPlaying={props.isPlaying} />
+            <TapeGear isPlaying={props.isPlaying} />
           </div>
           <div
             style={{
@@ -245,6 +247,7 @@ function Equalizer(props: {
   albumTitle?: string;
   bitsPerSample?: number;
   songDuration?: number;
+  analyserNode?: AnalyserNode;
   onPlayPause?: () => void;
 }) {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
@@ -362,10 +365,52 @@ function Receiver(props: {
   albumTitle?: string;
   bitsPerSample?: number;
   songDuration?: number;
+  analyserNode?: AnalyserNode;
   onPlayPause?: () => void;
   onVolumeChange?: (volume: number) => void;
 }) {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
+
+  let lcdRef: HTMLCanvasElement;
+  let currentMax = 0.0;
+
+  createEffect(() => {
+    if (lcdRef) {
+      var context = lcdRef.getContext("2d");
+
+      if (context) {
+        context.fillStyle = '#38BDF8';
+
+        context.fillRect(0, 0, 10, 2);
+
+        const dataArray = props.analyserNode && new Float32Array(props.analyserNode.frequencyBinCount);
+
+        setInterval(() => {
+          if (dataArray && context) {
+            props.analyserNode?.getFloatTimeDomainData(dataArray);
+
+            const max = dataArray.reduce((max, value) => Math.max(max, value));
+
+            currentMax = (currentMax * 2 + max) / 3;
+
+            context.clearRect(0, 0, 546, 150);
+
+            // for (let i = 0; i < currentMax * 30; ++i) {
+            //   context.fillRect(0 * 15, 150 - (i * 5), 20, 3);
+            // }
+
+            for (let volume = 0; volume < currentMax * (546 / 5 / 2); ++volume) {
+              context.fillRect(volume * 5, 0, 3, 20);
+              context.fillRect(volume * 5 + 546 / 2, 0, 3, 20);
+            }
+          }
+        }, 10);
+
+      }
+
+    }
+
+  });
 
   return (
     <Component>
@@ -373,20 +418,9 @@ function Receiver(props: {
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
       </div>
       <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
-        {/* <div class="flex flex-col text-sky-400" style={{ gap: '25px', visibility: !isPowerOn() ? 'hidden' : undefined }}>
-            <div class="text-xl" style={{ 'line-height': 1 }}>{props.bitsPerSample} BIT &nbsp; 96 KHZ</div>
-            <div class="flex flex-col" style={{ gap: '5px' }}>
-              <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>{props.songTitle}</div>
-              <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis', opacity: 0.5 }}>{props.songArtist} — {props.albumTitle}</div>
-            </div>
-            <div class="flex flex-col" style={{ gap: '10px' }}>
-              <div class="bg-sky-400" style={{ height: '2px' }} />
-              <div class="flex justify-between">
-                <div style={{ 'line-height': 1 }}>0:00</div>
-                <div style={{ 'line-height': 1 }}>{Math.floor(props.songDuration / 60)}:{`${Math.floor(props.songDuration % 60)}`.padStart(2, '0')}</div>
-              </div>
-            </div>
-          </div> */}
+        <div class="text-2xl  text-sky-400" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>DAT Player</div>
+        <div class="flex-1" />
+        <canvas ref={lcdRef} width="546" height="20" />
       </div>
       <div style={{ padding: '25px' }}>
         {/* <div style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px' }} class="flex justify-center items-center bg-neutral-950" onClick={() => props.onPlayPause?.()}>
@@ -401,7 +435,7 @@ function Receiver(props: {
 }
 
 function App() {
-  const [isPlaying, setIsPlaying] = createSignal(true);
+  const [isPlaying, setIsPlaying] = createSignal(false);
 
   const [songTitle, setSongTitle] = createSignal<string>('—');
   const [songArtist, setSongArtist] = createSignal<string>('');
@@ -415,6 +449,9 @@ function App() {
   let track: MediaElementAudioSourceNode;
   let gainNode: GainNode;
   let biquadFilterNode: BiquadFilterNode;
+  // let analyserNode: AnalyserNode;
+
+  const [analyserNode, setAnalyserNode] = createSignal<AnalyserNode>();
 
   function play() {
     const audioElement = document.querySelector("audio");
@@ -428,6 +465,7 @@ function App() {
 
       gainNode = audioContext.createGain();
       biquadFilterNode = audioContext.createBiquadFilter();
+      setAnalyserNode(audioContext.createAnalyser());
 
       console.log('gainNode.gain.maxValue', gainNode.gain.maxValue);
       console.log('biquadFilterNode.gain.maxValue', biquadFilterNode.gain.maxValue);
@@ -441,6 +479,7 @@ function App() {
       track
         .connect(gainNode)
         // .connect(biquadFilterNode)
+        .connect(analyserNode())
         .connect(audioContext.destination);
     }
 
@@ -472,7 +511,6 @@ function App() {
     setBitsPerSample(metadata.format.bitsPerSample);
     setSongDuration(metadata.format.duration);
 
-
     const reader = new FileReader();
     reader.addEventListener('load', () => {
       setAlbumImage(reader.result);
@@ -491,6 +529,7 @@ function App() {
       <div style={{ flex: 1 }} />
       {/* <img src={albumImage()} width={256} height={256} style={{ "margin-bottom": '20px' }} /> */}
       <DATPlayer
+        isPlaying={isPlaying()}
         songTitle={songTitle()}
         songArtist={songArtist()}
         albumTitle={albumTitle()}
@@ -498,8 +537,13 @@ function App() {
         songDuration={songDuration()}
         onPlayPause={play}
       />
-      <Equalizer />
-      <Receiver onVolumeChange={handleVolumeValueChange} />
+      <Equalizer
+        analyserNode={analyserNode()}
+      />
+      <Receiver
+        analyserNode={analyserNode()}
+        onVolumeChange={handleVolumeValueChange}
+      />
     </>
   );
 }
