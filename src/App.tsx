@@ -187,7 +187,7 @@ function DATPlayer(props: {
           <div class="text-xl" style={{ 'line-height': 1 }}>{props.bitsPerSample} BIT &nbsp; 96 KHZ</div>
           <div class="flex flex-col" style={{ gap: '5px' }}>
             <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>{props.songTitle}</div>
-            <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis', opacity: 0.5 }}>{props.songArtist} — {props.albumTitle}</div>
+            <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis' }}>{props.songArtist} — {props.albumTitle}</div>
           </div>
           <div class="flex flex-col" style={{ gap: '10px' }}>
             <div class="bg-sky-400" style={{ height: '2px' }} />
@@ -254,7 +254,7 @@ function Equalizer(props: {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
 
   let lcdRef: HTMLCanvasElement;
-  let frequencies = Array.from({ length: 20 }, () => 1.0);
+  let frequencies = Array.from({ length: 10 }, () => 1.0);
   let canvasInterval: ReturnType<typeof setInterval>;
 
   createEffect(() => {
@@ -324,15 +324,29 @@ function Equalizer(props: {
 
       props.analyserNode?.getByteFrequencyData(frequencyDataArray2);
 
-      for (let i = 0; i < 20; ++i) {
-        frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor(i * i * (1 / (41000 / 48000)))] / 255) / 2;
+      for (let i = 0; i < 10; ++i) {
+        frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor((2 ** i - 1) * (1 / (41000 / 48000)))] / 255) / 2;
       }
 
       context.clearRect(0, 0, 546, 118);
 
       for (let [index, freq] of frequencies.entries()) {
+        context.fillStyle = '#38BDF880';
+        context.fillRect(index * 25, 118 - 5 - (0 * 5), 20, 3);
+
+        context.fillStyle = '#38BDF8';
         for (let i = 0; i < freq * (118 / 5); ++i) {
           context.fillRect(index * 25, 118 - (i * 5), 20, 3);
+        }
+      }
+
+      for (let [index, freq] of frequencies.entries()) {
+        context.fillStyle = '#38BDF880';
+        context.fillRect(index * 25 + 300, 118 - 5 - (0 * 5), 20, 3);
+
+        for (let i = 0; i < freq * (118 / 5); ++i) {
+          context.fillStyle = '#38BDF8';
+          context.fillRect(index * 25 + 300, 118 - (i * 5), 20, 3);
         }
       }
     }, 10);
@@ -399,15 +413,20 @@ function Receiver(props: {
       if (dataArray && context) {
         props.analyserNode?.getFloatTimeDomainData(dataArray);
 
-        const max = dataArray.reduce((max, value) => Math.max(max, value));
+        const max = dataArray.reduce((max, value) => Math.max(max, value), 0);
 
         currentMax = (currentMax * 1 + max) / 2;
 
         context.clearRect(0, 0, 546, 150);
 
-        for (let volume = 0; volume < currentMax * (546 / 5 / 2); ++volume) {
+        for (let volume = 0; volume < currentMax * (246 / 5); ++volume) {
+          context.fillStyle = '#38BDF880';
+          context.fillRect(0 * 5, 0, 3, 20);
+          context.fillRect(0 * 5 + 300, 0, 3, 20);
+
+          context.fillStyle = '#38BDF8';
           context.fillRect(volume * 5, 0, 3, 20);
-          context.fillRect(volume * 5 + 546 / 2, 0, 3, 20);
+          context.fillRect(volume * 5 + 300, 0, 3, 20);
         }
       }
     }, 10);
@@ -467,7 +486,7 @@ function App() {
       gainNode = audioContext.createGain();
       biquadFilterNode = audioContext.createBiquadFilter();
       const _ = audioContext.createAnalyser();
-      _.fftSize = 1024;
+      _.fftSize = 2048;
       setAnalyserNode(_);
 
       console.log('gainNode.gain.maxValue', gainNode.gain.maxValue);
@@ -505,8 +524,14 @@ function App() {
     }
   }
 
+  const song = 'Waitin  for the Bus.flac';
+  // const song = 'Money for Nothing.flac';
+  // const song = 'You Know My Name (From  Casino Royale ).flac';
+  // const song = 'Riviera Paradise.flac';
+  // const song = 'Message from Home.flac';
+
   createEffect(async () => {
-    const metadata = await musicMetadata.fetchFromUrl('Waitin  for the Bus.flac', {});
+    const metadata = await musicMetadata.fetchFromUrl(song, {});
 
     setSongTitle(metadata.common.title);
     setSongArtist(metadata.common.artist);
@@ -528,7 +553,7 @@ function App() {
 
   return (
     <>
-      <audio src="Waitin  for the Bus.flac"></audio>
+      <audio src={song}></audio>
       <div style={{ flex: 1 }} />
       {/* <img src={albumImage()} width={256} height={256} style={{ "margin-bottom": '20px' }} /> */}
       <DATPlayer
