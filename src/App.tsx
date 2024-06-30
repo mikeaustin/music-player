@@ -487,6 +487,7 @@ function App() {
       biquadFilterNode = audioContext.createBiquadFilter();
       const _ = audioContext.createAnalyser();
       _.fftSize = 2048;
+      _.smoothingTimeConstant = 0.0;
       setAnalyserNode(_);
 
       console.log('gainNode.gain.maxValue', gainNode.gain.maxValue);
