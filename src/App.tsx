@@ -258,7 +258,7 @@ function Equalizer(props: {
   let canvasInterval: ReturnType<typeof setInterval>;
 
   createEffect(() => {
-    if (!isPowerOn()) {
+    if (!isPowerOn() || !props.isPlaying) {
       clearInterval(canvasInterval);
 
       var context = lcdRef.getContext("2d");
@@ -311,46 +311,58 @@ function Equalizer(props: {
     // }, 50);
 
     // setTimeout(() => {
-    canvasInterval = setInterval(() => {
-      if (!context || !frequencyDataArray2) {
-        return;
-      }
 
-      if (!props.isPlaying) {
+    let lastTimestamp = performance.now();
+
+    const animationFrame = (timestamp: number) => {
+      if (timestamp - lastTimestamp > 1000 / 30) {
+        // console.log(timestamp);
+
+        if (!context || !frequencyDataArray2) {
+          return;
+        }
+
+        if (!props.isPlaying) {
+          context.clearRect(0, 0, 546, 118);
+
+          return;
+        }
+
+        props.analyserNode?.getByteFrequencyData(frequencyDataArray2);
+
+        for (let i = 0; i < 10; ++i) {
+          frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor((2 ** i - 1) * (1 / (41000 / 48000)))] / 255) / 2;
+        }
+
         context.clearRect(0, 0, 546, 118);
 
-        return;
-      }
+        for (let [index, freq] of frequencies.entries()) {
+          context.fillStyle = '#38BDF880';
+          context.fillRect(index * 25, 118 - 5 - (0 * 5), 20, 3);
 
-      props.analyserNode?.getByteFrequencyData(frequencyDataArray2);
-
-      for (let i = 0; i < 10; ++i) {
-        frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor((2 ** i - 1) * (1 / (41000 / 48000)))] / 255) / 2;
-      }
-
-      context.clearRect(0, 0, 546, 118);
-
-      for (let [index, freq] of frequencies.entries()) {
-        context.fillStyle = '#38BDF880';
-        context.fillRect(index * 25, 118 - 5 - (0 * 5), 20, 3);
-
-        context.fillStyle = '#38BDF8';
-        for (let i = 0; i < freq * (118 / 5); ++i) {
-          context.fillRect(index * 25, 118 - (i * 5), 20, 3);
-        }
-      }
-
-      for (let [index, freq] of frequencies.entries()) {
-        context.fillStyle = '#38BDF880';
-        context.fillRect(index * 25 + 300, 118 - 5 - (0 * 5), 20, 3);
-
-        for (let i = 0; i < freq * (118 / 5); ++i) {
           context.fillStyle = '#38BDF8';
-          context.fillRect(index * 25 + 300, 118 - (i * 5), 20, 3);
+          for (let i = 0; i < freq * (118 / 5); ++i) {
+            context.fillRect(index * 25, 118 - (i * 5), 20, 3);
+          }
         }
+
+        for (let [index, freq] of frequencies.entries()) {
+          context.fillStyle = '#38BDF880';
+          context.fillRect(index * 25 + 300, 118 - 5 - (0 * 5), 20, 3);
+
+          for (let i = 0; i < freq * (118 / 5); ++i) {
+            context.fillStyle = '#38BDF8';
+            context.fillRect(index * 25 + 300, 118 - (i * 5), 20, 3);
+          }
+        }
+
+        lastTimestamp = timestamp;
       }
-    }, 10);
-    // }, 1500);
+
+      requestAnimationFrame(animationFrame);
+    };
+
+    requestAnimationFrame(animationFrame);
   });
 
   return (
@@ -409,27 +421,37 @@ function Receiver(props: {
 
     const dataArray = props.analyserNode && new Float32Array(props.analyserNode.frequencyBinCount);
 
-    setInterval(() => {
-      if (dataArray && context) {
-        props.analyserNode?.getFloatTimeDomainData(dataArray);
+    let lastTimestamp = performance.now();
 
-        const max = dataArray.reduce((max, value) => Math.max(max, value), 0);
+    const animationFrame = (timestamp: number) => {
+      if (timestamp - lastTimestamp > 1000 / 30) {
+        if (dataArray && context) {
+          props.analyserNode?.getFloatTimeDomainData(dataArray);
 
-        currentMax = (currentMax * 1 + max) / 2;
+          const max = dataArray.reduce((max, value) => Math.max(max, value), 0);
 
-        context.clearRect(0, 0, 546, 150);
+          currentMax = (currentMax * 1 + max) / 2;
 
-        for (let volume = 0; volume < currentMax * (246 / 5); ++volume) {
-          context.fillStyle = '#38BDF880';
-          context.fillRect(0 * 5, 0, 3, 20);
-          context.fillRect(0 * 5 + 300, 0, 3, 20);
+          context.clearRect(0, 0, 546, 150);
 
-          context.fillStyle = '#38BDF8';
-          context.fillRect(volume * 5, 0, 3, 20);
-          context.fillRect(volume * 5 + 300, 0, 3, 20);
+          for (let volume = 0; volume < currentMax * (246 / 5); ++volume) {
+            context.fillStyle = '#38BDF880';
+            context.fillRect(0 * 5, 0, 3, 20);
+            context.fillRect(0 * 5 + 300, 0, 3, 20);
+
+            context.fillStyle = '#38BDF8';
+            context.fillRect(volume * 5, 0, 3, 20);
+            context.fillRect(volume * 5 + 300, 0, 3, 20);
+          }
         }
+
+        lastTimestamp = timestamp;
       }
-    }, 10);
+
+      requestAnimationFrame(animationFrame);
+    };
+
+    requestAnimationFrame(animationFrame);
   });
 
   return (
