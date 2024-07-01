@@ -330,8 +330,11 @@ function Equalizer(props: {
 
         props.analyserNode?.getByteFrequencyData(frequencyDataArray2);
 
+        console.log(frequencyDataArray2[1023]);
+
         for (let i = 0; i < 10; ++i) {
-          frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor((2 ** i - 1) * (1 / (41000 / 48000)))] / 255) / 2;
+          // frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor((2 ** i - 1) * (1 / (41000 / 48000)))] / 255) / 2;
+          frequencies[i] = frequencyDataArray2[Math.floor(i / 9 * 1024 * (20000 / 48000))] / 255;
         }
 
         context.clearRect(0, 0, 546, 118);
@@ -489,6 +492,7 @@ function App() {
 
   let audioContext: AudioContext;
   let track: MediaElementAudioSourceNode;
+  let oscillatorNode: OscillatorNode;
   let gainNode: GainNode;
   let biquadFilterNode: BiquadFilterNode;
   // let analyserNode: AnalyserNode;
@@ -505,12 +509,22 @@ function App() {
 
       console.log(track);
 
+      oscillatorNode = new OscillatorNode(audioContext);
       gainNode = audioContext.createGain();
       biquadFilterNode = audioContext.createBiquadFilter();
       const _ = audioContext.createAnalyser();
       _.fftSize = 2048;
-      _.smoothingTimeConstant = 0.0;
+      _.smoothingTimeConstant = 0.2;
       setAnalyserNode(_);
+
+      oscillatorNode.frequency.value = 20;
+      // oscillatorNode.start();
+
+      // setInterval(() => {
+      //   oscillatorNode.frequency.value *= 1.01;
+
+      //   console.log(oscillatorNode.frequency.value);
+      // }, 100);
 
       console.log('gainNode.gain.maxValue', gainNode.gain.maxValue);
       console.log('biquadFilterNode.gain.maxValue', biquadFilterNode.gain.maxValue);
