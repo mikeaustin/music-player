@@ -70,7 +70,7 @@ function Dial(props: {
   const handlePointerDown: JSX.EventHandler<HTMLDivElement, PointerEvent> = (event) => {
     event.currentTarget.setPointerCapture(event.pointerId);
 
-    _value = value() * 270;
+    _value = value();
 
     setFirstEvent(event);
   };
@@ -79,7 +79,7 @@ function Dial(props: {
     const _firstEvent = firstEvent();
 
     if (_firstEvent) {
-      const value = Math.max(0, Math.min(270, _value + (_firstEvent.clientY - event.clientY))) / 270;
+      const value = Math.max(0.0, Math.min(1.0, _value + (_firstEvent.clientY - event.clientY) / 270));
 
       setValue(value);
 
@@ -89,6 +89,16 @@ function Dial(props: {
 
   const handlePointerUp: JSX.EventHandler<HTMLDivElement, PointerEvent> = () => {
     setFirstEvent(undefined);
+  };
+
+  const handleWheel: JSX.EventHandler<HTMLDivElement, WheelEvent> = (event) => {
+    _value = value();
+
+    const value2 = Math.max(0.0, Math.min(1.0, _value - Math.sign(event.deltaY) / 50));
+
+    setValue(value2);
+
+    props.onValueChange?.(value2);
   };
 
   return (
@@ -112,6 +122,7 @@ function Dial(props: {
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onWheel={handleWheel}
       >
         <div class="bg-sky-400" style={{ width: '3px', height: '20px' }} />
       </div>
@@ -329,8 +340,6 @@ function Equalizer(props: {
         }
 
         props.analyserNode?.getByteFrequencyData(frequencyDataArray2);
-
-        console.log(frequencyDataArray2[1023]);
 
         for (let i = 0; i < 10; ++i) {
           // frequencies[i] = (frequencies[i] * 1 + frequencyDataArray2[Math.floor((2 ** i - 1) * (1 / (41000 / 48000)))] / 255) / 2;
@@ -585,6 +594,8 @@ function App() {
   });
 
   const handleVolumeValueChange = (volume: number) => {
+    console.log('handleVolumeValueChange', volume);
+
     gainNode.gain.value = volume;
   };
 
