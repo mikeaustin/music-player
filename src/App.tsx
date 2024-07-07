@@ -181,7 +181,7 @@ function Component(props: {
         {...rest}
       >
         <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0 }} />
-        <div class="flex flex-row" style={{ position: 'relative' }}>
+        <div class="flex flex-1 flex-row" style={{ position: 'relative' }}>
           {props.children}
         </div>
       </div>
