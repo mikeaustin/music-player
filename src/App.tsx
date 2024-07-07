@@ -143,10 +143,26 @@ function Component(props: {
   let canvasRef: HTMLCanvasElement;
 
   createEffect(() => {
-    console.log(parentRef.offsetWidth, parentRef.offsetHeight);
-
     canvasRef.width = parentRef.offsetWidth;
     canvasRef.height = parentRef.offsetHeight;
+
+    var context = canvasRef.getContext("2d");
+
+    if (context) {
+      for (let y = 0; y < canvasRef.height; ++y) {
+        context.beginPath();
+
+        context.lineWidth = 2.0;
+
+        context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 2.9%)' : 'hsl(0, 0%, 3%)';
+        // context.strokeStyle = y % 2 === 0 ? 'hsl(0, 0%, 0%)' : 'hsl(0, 0%, 5%)';
+
+        context.moveTo(0, y - 4);
+        context.lineTo(canvasRef.width - 4, y - 4);
+
+        context.stroke();
+      }
+    }
   });
 
   return (
@@ -157,15 +173,17 @@ function Component(props: {
         style={{
           position: 'relative',
           width: '1400px',
-          background: 'url(metal.png) no-repeat',
+          // background: 'url(metal.png) no-repeat',
           // background: 'repeat 0 0 / 100% 1px linear-gradient(hsl(0, 0%, 0%) 0px, hsl(0, 0%, 5%) 1px, hsl(0, 0%, 0%) 0.5px)',
           border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)',
           ...props.style
         }}
         {...rest}
       >
-        <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, background: 'red' }} />
-        {props.children}
+        <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0 }} />
+        <div class="flex flex-row" style={{ position: 'relative' }}>
+          {props.children}
+        </div>
       </div>
       <div style={{ padding: '0 75px' }} class="flex justify-between">
         <div style={{ width: '150px', height: '20px', background: 'linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%))', 'border-left': '1px solid hsl(0, 0%, 2%)', 'border-right': '1px solid hsl(0, 0%, 2%)' }} />
