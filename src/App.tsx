@@ -139,9 +139,20 @@ function Component(props: {
 }) {
   const [local, rest] = splitProps(props, ['children', 'style']);
 
+  let parentRef: HTMLDivElement;
+  let canvasRef: HTMLCanvasElement;
+
+  createEffect(() => {
+    console.log(parentRef.offsetWidth, parentRef.offsetHeight);
+
+    canvasRef.width = parentRef.offsetWidth;
+    canvasRef.height = parentRef.offsetHeight;
+  });
+
   return (
-    <div class="flex flex-col">
+    <div class="flex flex-col" style={{ width: '1400px' }}>
       <div
+        ref={parentRef}
         class="flex flex-row"
         style={{
           position: 'relative',
@@ -153,6 +164,7 @@ function Component(props: {
         }}
         {...rest}
       >
+        <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, background: 'red' }} />
         {props.children}
       </div>
       <div style={{ padding: '0 75px' }} class="flex justify-between">
