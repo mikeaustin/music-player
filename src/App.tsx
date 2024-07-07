@@ -152,7 +152,7 @@ function Component(props: {
       for (let y = 0; y < canvasRef.height; ++y) {
         context.beginPath();
 
-        context.lineWidth = 2.0;
+        context.lineWidth = window.devicePixelRatio;
 
         context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 2.9%)' : 'hsl(0, 0%, 3%)';
         // context.strokeStyle = y % 2 === 0 ? 'hsl(0, 0%, 0%)' : 'hsl(0, 0%, 5%)';
