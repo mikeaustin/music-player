@@ -199,6 +199,8 @@ function DATPlayer(props: {
   albumTitle?: string;
   isPlaying: boolean;
   bitsPerSample?: number;
+  sampleRate?: number;
+  channelsCount?: number;
   songDuration?: number;
   onPlayPause?: () => void;
 }) {
@@ -225,16 +227,31 @@ function DATPlayer(props: {
       </div>
       <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
         <div class="flex flex-col text-sky-400" style={{ gap: '25px', visibility: !isPowerOn() ? 'hidden' : undefined }}>
-          <div class="text-xl" style={{ 'line-height': 1 }}>{props.bitsPerSample} BIT &nbsp; 96 KHZ</div>
+          <div class="flex justify-between">
+            <div class="text-xl" style={{ 'line-height': 1 }}>
+              {props.bitsPerSample} BIT &nbsp; {props.sampleRate / 1000} KHZ
+            </div>
+            <div class="text-xl" style={{ 'line-height': 1 }}>
+              {props.channelsCount === 2 ? 'STEREO' : 'MONO'}
+            </div>
+          </div>
           <div class="flex flex-col" style={{ gap: '5px' }}>
-            <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>{props.songTitle}</div>
-            <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis' }}>{props.songArtist} — {props.albumTitle}</div>
+            <div class="text-2xl" style={{ 'line-height': 1, "text-transform": 'uppercase' }}>
+              {props.songTitle}
+            </div>
+            <div class="text-xl" style={{ 'line-height': 1, "text-transform": 'uppercase', "white-space": 'nowrap', overflow: 'hidden', "text-overflow": 'ellipsis' }}>
+              {props.songArtist} — {props.albumTitle}
+            </div>
           </div>
           <div class="flex flex-col" style={{ gap: '10px' }}>
             <div class="bg-sky-400" style={{ height: '2px' }} />
             <div class="flex justify-between">
-              <div style={{ 'line-height': 1 }}>0:00</div>
-              <div style={{ 'line-height': 1 }}>{Math.floor(props.songDuration / 60)}:{`${Math.floor(props.songDuration % 60)}`.padStart(2, '0')}</div>
+              <div style={{ 'line-height': 1 }}>
+                0:00
+              </div>
+              <div style={{ 'line-height': 1 }}>
+                {Math.floor(props.songDuration / 60)}:{`${Math.floor(props.songDuration % 60)}`.padStart(2, '0')}
+              </div>
             </div>
           </div>
         </div>
@@ -527,6 +544,8 @@ function App() {
   const [albumImage, setAlbumImage] = createSignal<string>('x');
 
   const [bitsPerSample, setBitsPerSample] = createSignal<number>();
+  const [sampleRate, setSampleRate] = createSignal<number>();
+  const [channelsCount, setChannelsCount] = createSignal<number>();
   const [songDuration, setSongDuration] = createSignal<number>();
 
   let audioContext: AudioContext;
@@ -609,10 +628,14 @@ function App() {
   createEffect(async () => {
     const metadata = await musicMetadata.fetchFromUrl(song, {});
 
+    console.log(metadata);
+
     setSongTitle(metadata.common.title);
     setSongArtist(metadata.common.artist);
     setAlbumTitle(metadata.common.album);
     setBitsPerSample(metadata.format.bitsPerSample);
+    setSampleRate(metadata.format.sampleRate);
+    setChannelsCount(metadata.format.numberOfChannels);
     setSongDuration(metadata.format.duration);
 
     const reader = new FileReader();
@@ -640,6 +663,8 @@ function App() {
         songArtist={songArtist()}
         albumTitle={albumTitle()}
         bitsPerSample={bitsPerSample()}
+        sampleRate={sampleRate()}
+        channelsCount={channelsCount()}
         songDuration={songDuration()}
         onPlayPause={play}
       />
