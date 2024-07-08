@@ -149,16 +149,16 @@ function Component(props: {
     var context = canvasRef.getContext("2d");
 
     if (context) {
-      for (let y = 0; y < canvasRef.height; ++y) {
+      for (let y = 0; y < canvasRef.height - 2; ++y) {
         context.beginPath();
 
         context.lineWidth = window.devicePixelRatio;
 
-        context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 2.9%)' : 'hsl(0, 0%, 3%)';
+        context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 1.5%)' : 'hsl(0, 0%, 2%)';
         // context.strokeStyle = y % 2 === 0 ? 'hsl(0, 0%, 0%)' : 'hsl(0, 0%, 5%)';
 
-        context.moveTo(0, y - 4);
-        context.lineTo(canvasRef.width - 4, y - 4);
+        context.moveTo(0, y);
+        context.lineTo(canvasRef.width - 4, y);
 
         context.stroke();
       }
