@@ -92,6 +92,8 @@ function Dial(props: {
   };
 
   const handleWheel: JSX.EventHandler<HTMLDivElement, WheelEvent> = (event) => {
+    console.log('handleWheel');
+
     _value = value();
 
     const value2 = Math.max(0.0, Math.min(1.0, _value - Math.sign(event.deltaY) / 50));
@@ -175,7 +177,7 @@ function Component(props: {
           width: '1400px',
           // background: 'url(metal.png) no-repeat',
           // background: 'repeat 0 0 / 100% 1px linear-gradient(hsl(0, 0%, 0%) 0px, hsl(0, 0%, 5%) 1px, hsl(0, 0%, 0%) 0.5px)',
-          border: '2px solid black', 'border-radius': '0px', 'border-top': '2px solid hsl(0, 0%, 10%)',
+          border: '1px solid black', 'border-radius': '0px', 'border-top': '1px solid hsl(0, 0%, 10%)',
           ...props.style
         }}
         {...rest}
@@ -433,9 +435,7 @@ function Equalizer(props: {
         <canvas ref={lcdRef} width="546" height="118" />
       </div>
       <div class="flex flex-col" style={{ padding: '25px 35px', gap: '20px' }}>
-        <div>
-          hello
-        </div>
+        <div style={{ height: '50px' }} />
         <div class="flex" style={{ gap: '35px' }}>
           <Dial size={75} />
           <Dial size={75} />
@@ -528,8 +528,10 @@ function Receiver(props: {
         </div> */}
       </div>
       <div class="flex-1" />
-      <div style={{ padding: '25px 35px' }}>
+      <div class="flex flex-col" style={{ padding: '25px 35px', 'align-items': 'center' }}>
         <Dial size={150} onValueChange={props.onVolumeChange} />
+        <div style={{ height: '50px' }} />
+        {/* <Dial size={50} /> */}
       </div>
     </Component>
   );
