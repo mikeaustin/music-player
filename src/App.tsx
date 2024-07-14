@@ -21,7 +21,7 @@ function PowerButton(props: {
   setIsPowerOn: (isPowerOn: boolean) => void;
 }) {
   return (
-    <button style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px', padding: '10px', background: 'linear-gradient(180deg, hsl(0, 0%, 5%), hsl(0, 0%, 3%))' }} class="flex justify-center bg-neutral-950 active:brightness-75 group" onClick={() => props.setIsPowerOn(!props.isPowerOn)}>
+    <button style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px', padding: '10px', background: 'linear-gradient(180deg, hsl(0, 0%, 6%), hsl(0, 0%, 4%))' }} class="flex justify-center bg-neutral-950 active:brightness-75 group" onClick={() => props.setIsPowerOn(!props.isPowerOn)}>
       <div class={props.isPowerOn ? "bg-sky-400 xgroup-active:bg-sky-800" : 'bg-black xgroup-active:bg-sky-800'} style={{ width: '20px', height: '3px' }} />
     </button>
   );
@@ -156,11 +156,11 @@ function Component(props: {
 
         context.lineWidth = window.devicePixelRatio;
 
-        context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 1.5%)' : 'hsl(0, 0%, 2%)';
+        context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 4.9%)' : 'hsl(0, 0%, 5%)';
         // context.strokeStyle = y % 2 === 0 ? 'hsl(0, 0%, 0%)' : 'hsl(0, 0%, 5%)';
 
         context.moveTo(0, y);
-        context.lineTo(canvasRef.width - 4, y);
+        context.lineTo(canvasRef.width - 2, y);
 
         context.stroke();
       }
@@ -259,7 +259,7 @@ function DATPlayer(props: {
         </div>
       </div>
       <div style={{ padding: '25px 35px' }}>
-        <button style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px', padding: '10px', background: 'linear-gradient(180deg, hsl(0, 0%, 5%), hsl(0, 0%, 3%))' }} class="flex justify-center bg-neutral-950 active:brightness-75 group" onClick={() => props.onPlayPause?.()}>
+        <button style={{ width: '80px', height: '50px', border: '2px solid black', 'border-radius': '4px', padding: '10px', background: 'linear-gradient(180deg, hsl(0, 0%, 6%), hsl(0, 0%, 4%))' }} class="flex justify-center bg-neutral-950 active:brightness-75 group" onClick={() => props.onPlayPause?.()}>
           ▶
         </button>
       </div>
@@ -653,6 +653,8 @@ function App() {
 
     gainNode.gain.value = volume;
   };
+
+  // return null;
 
   return (
     <>
