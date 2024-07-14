@@ -60,9 +60,10 @@ function TapeGear(props: {
 
 function Dial(props: {
   size: number;
+  initialValue?: number;
   onValueChange?: (value: number) => void;
 }) {
-  const [value, setValue] = createSignal<number>(0.5);
+  const [value, setValue] = createSignal<number>(props.initialValue ?? 0.5);
   const [firstEvent, setFirstEvent] = createSignal<PointerEvent>();
 
   let _value: number;
@@ -529,7 +530,7 @@ function Receiver(props: {
       </div>
       <div class="flex-1" />
       <div class="flex flex-col" style={{ padding: '25px 35px', 'align-items': 'center' }}>
-        <Dial size={150} onValueChange={props.onVolumeChange} />
+        <Dial size={150} initialValue={1.0} onValueChange={props.onVolumeChange} />
         <div style={{ height: '50px' }} />
         {/* <Dial size={50} /> */}
       </div>
@@ -621,7 +622,7 @@ function App() {
     }
   }
 
-  const song = 'Waitin  for the Bus.flac';
+  const song = 'La Grange.m4a';
   // const song = 'Money for Nothing.flac';
   // const song = 'You Know My Name (From  Casino Royale ).flac';
   // const song = 'Riviera Paradise.flac';
