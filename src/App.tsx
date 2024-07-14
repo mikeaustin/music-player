@@ -384,7 +384,7 @@ function Equalizer(props: {
         }
 
         if (!props.isPlaying) {
-          context.clearRect(0, 0, 546, 118);
+          context.clearRect(0, 0, 546, 145);
 
           return;
         }
@@ -396,25 +396,25 @@ function Equalizer(props: {
           frequencies[i] = frequencyDataArray2[Math.floor(i / 9 * 1024 * (20000 / 48000))] / 255;
         }
 
-        context.clearRect(0, 0, 546, 118);
+        context.clearRect(0, 0, 546, 145);
 
         for (let [index, freq] of frequencies.entries()) {
           context.fillStyle = '#38BDF880';
-          context.fillRect(index * 25, 118 - 5 - (0 * 5), 20, 3);
+          context.fillRect(index * 25, 145 - 5 - (0 * 5), 20, 3);
 
           context.fillStyle = '#38BDF8';
-          for (let i = 0; i < freq * (118 / 5); ++i) {
-            context.fillRect(index * 25, 118 - (i * 5), 20, 3);
+          for (let i = 0; i < freq * (145 / 5); ++i) {
+            context.fillRect(index * 25, 145 - (i * 5), 20, 3);
           }
         }
 
         for (let [index, freq] of frequencies.entries()) {
           context.fillStyle = '#38BDF880';
-          context.fillRect(index * 25 + 300, 118 - 5 - (0 * 5), 20, 3);
+          context.fillRect(index * 25 + 300, 145 - 5 - (0 * 5), 20, 3);
 
-          for (let i = 0; i < freq * (118 / 5); ++i) {
+          for (let i = 0; i < freq * (145 / 5); ++i) {
             context.fillStyle = '#38BDF8';
-            context.fillRect(index * 25 + 300, 118 - (i * 5), 20, 3);
+            context.fillRect(index * 25 + 300, 145 - (i * 5), 20, 3);
           }
         }
 
@@ -433,7 +433,7 @@ function Equalizer(props: {
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
       </div>
       <div class="flex flex-col" style={{ width: '600px', padding: '25px', background: lcdBackground, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
-        <canvas ref={lcdRef} width="546" height="118" />
+        <canvas ref={lcdRef} width="546" height="145" />
       </div>
       <div class="flex flex-col" style={{ padding: '25px 35px', gap: '20px' }}>
         <div style={{ height: '50px' }} />
