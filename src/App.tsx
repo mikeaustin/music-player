@@ -209,22 +209,8 @@ function DATPlayer(props: {
 }) {
   const [isPowerOn, setIsPowerOn] = createSignal(true);
 
-  const handleDrop = (event) => {
-    event.preventDefault();
-
-    const file = event.dataTransfer.items[0].getAsFile();
-
-    console.log(file);
-  };
-
-  const handleDragOver = (event) => {
-    // console.log(event);
-
-    event.preventDefault();
-  };
-
   return (
-    <Component onDrop={handleDrop} onDragOver={handleDragOver}>
+    <Component>
       <div style={{ padding: '25px 35px' }}>
         <PowerButton isPowerOn={isPowerOn()} setIsPowerOn={setIsPowerOn} />
       </div>
@@ -646,7 +632,9 @@ function App() {
       setAlbumImage(reader.result);
     });
 
-    reader.readAsDataURL(new Blob([metadata.common.picture[0].data], { type: 'image/jpeg' }));
+    if (metadata.common.picture) {
+      reader.readAsDataURL(new Blob([metadata.common.picture[0].data], { type: 'image/jpeg' }));
+    }
   });
 
   const handleVolumeValueChange = (volume: number) => {
@@ -655,10 +643,32 @@ function App() {
     gainNode.gain.value = volume;
   };
 
-  // return null;
+
+  const handleDrop = async (event) => {
+    event.preventDefault();
+
+    const file = event.dataTransfer.items[0].getAsFile();
+
+    console.log(file);
+
+    audioContext = new AudioContext();
+
+    const track = new AudioBufferSourceNode(audioContext, {
+      buffer: await audioContext.decodeAudioData(await file.arrayBuffer()),
+    });
+
+    track
+      .connect(audioContext.destination);
+
+    track.start();
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
 
   return (
-    <>
+    <div class="flex flex-col flex-1" onDragOver={handleDragOver} onDrop={handleDrop}>
       <audio src={song}></audio>
       <div style={{ flex: 1 }} />
       {/* <img src={albumImage()} width={256} height={256} style={{ "margin-bottom": '20px' }} /> */}
@@ -681,7 +691,7 @@ function App() {
         analyserNode={analyserNode()}
         onVolumeChange={handleVolumeValueChange}
       />
-    </>
+    </div>
   );
 }
 
