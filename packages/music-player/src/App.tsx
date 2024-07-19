@@ -1,6 +1,6 @@
 import { ComponentProps, createSignal, splitProps } from 'solid-js';
 
-import View from './core/view';
+import { View, Button } from './core';
 
 import './App.css';
 
@@ -9,13 +9,13 @@ function Component(
 ) {
   return (
     <View>
-      <View style={{ background: 'gray', width: '960px', height: '100px' }} {...props}>
+      <View style={{ background: 'hsl(0, 0%, 10%)', width: '960px', height: '150px', 'border-top': '1px solid hsl(0, 0%, 20%)' }} {...props}>
         {props.children}
       </View>
       <View horizontal paddingHorizontal="small">
-        <View style={{ background: 'gray', width: '100px', height: '20px' }} />
+        <View style={{ background: 'hsl(0, 0%, 10%)', width: '100px', height: '20px' }} />
         <View flex />
-        <View style={{ background: 'gray', width: '100px', height: '20px' }} />
+        <View style={{ background: 'hsl(0, 0%, 10%)', width: '100px', height: '20px' }} />
       </View>
     </View>
   );
