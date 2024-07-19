@@ -1,0 +1,48 @@
+.View {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.flex {
+  flex: 1
+}
+
+.horizontal {
+  flex-direction: row;
+}
+
+/*  */
+
+.alignHorizontalLeft {
+  align-items: flex-start;
+}
+
+.alignHorizontalCenter {
+  align-items: center;
+}
+
+.alignHorizontalRight {
+  align-items: flex-end;
+}
+
+/*  */
+
+.alignVerticalLeft {
+  justify-content: flex-start;
+}
+
+.alignVerticalCenter {
+  justify-content: center;
+}
+
+.alignVerticalRight {
+  justify-content: flex-end;
+}
+
+/*  */
+
+.paddingHorizontalSmall {
+  padding-left: 8px;
+  padding-right: 8px;
+}
