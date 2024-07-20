@@ -1,4 +1,4 @@
-import { ComponentProps, createSignal, splitProps } from 'solid-js';
+import { JSX, ComponentProps, createSignal, splitProps } from 'solid-js';
 
 import { View, Button } from './core';
 
@@ -20,10 +20,37 @@ function Component(
 }
 
 function App() {
-  const [count, setCount] = createSignal(0);
+  const audioContext = new AudioContext();
+
+  const handleDragOver: JSX.EventHandler<HTMLDivElement, DragEvent> = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDrop: JSX.EventHandler<HTMLDivElement, DragEvent> = async (event) => {
+    event.preventDefault();
+
+    const file = event.dataTransfer?.items[0]?.getAsFile();
+
+    if (file) {
+      const track = new AudioBufferSourceNode(audioContext, {
+        buffer: await audioContext.decodeAudioData(await file.arrayBuffer()),
+      });
+
+      track
+        .connect(audioContext.destination);
+
+      track.start();
+    }
+  };
 
   return (
-    <View as="div" flex align="bottom center" style={{ position: 'fixed', inset: 0, background: 'radial-gradient(at bottom, hsl(0, 0%, 15%), hsl(0, 0%, 0%) 1500px)' }}>
+    <View
+      flex
+      align="bottom center"
+      style={{ position: 'fixed', inset: 0, background: 'radial-gradient(at bottom, hsl(0, 0%, 15%), hsl(0, 0%, 0%) 1500px)' }}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <Component horizontal>
         <View>hello</View>
         <View>hello</View>
