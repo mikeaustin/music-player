@@ -10,12 +10,11 @@ type ButtonProps = {
 };
 
 function Button(
-  props: ButtonProps
+  props: ButtonProps & ComponentProps<typeof View> & Omit<ComponentProps<'button'>, keyof ButtonProps>
 ) {
   const [local, rest] = splitProps(props, [
     'children', 'classList',
   ]);
-
 
   const viewClassList = {
     [styles.Button]: true,

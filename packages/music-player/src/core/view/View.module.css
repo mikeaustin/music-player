@@ -42,19 +42,24 @@
 
 /*  */
 
-.paddingHorizontalSmall {
+.paddingHorizontal-small {
   padding-left: 8px;
   padding-right: 8px;
 }
 
-.paddingHorizontalMedium {
+.paddingHorizontal-medium {
   padding-left: 16px;
   padding-right: 16px;
 }
 
-.paddingHorizontalLarge {
+.paddingHorizontal-large {
   padding-left: 24px;
   padding-right: 24px;
+}
+
+.paddingHorizontal-xlarge {
+  padding-left: 32px;
+  padding-right: 32px;
 }
 
 /*  */

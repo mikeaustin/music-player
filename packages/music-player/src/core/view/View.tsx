@@ -9,7 +9,7 @@ type AlignHorizontal = 'left' | 'center' | 'right';
 type AlignVertical = 'top' | 'middle' | 'bottom';
 type AlignShorthand = `${AlignVertical} ${AlignHorizontal}`;
 
-type PaddingHorizontal = 'small' | 'medium' | 'large';
+type PaddingHorizontal = 'small' | 'medium' | 'large' | 'xlarge';
 
 // type Values = 10;
 type Color = `gray-${number}`;
@@ -55,9 +55,12 @@ function View<T extends ElementType = 'div'>(
     [styles.alignVerticalTop]: alignVertical === 'top',
     [styles.alignVerticalCenter]: alignVertical === 'middle',
     [styles.alignVerticalRight]: alignVertical === 'bottom',
-    [styles.paddingHorizontalSmall]: local.paddingHorizontal === 'small',
-    [styles.paddingHorizontalMedium]: local.paddingHorizontal === 'medium',
-    [styles.paddingHorizontalLarge]: local.paddingHorizontal === 'large',
+
+    [styles[`paddingHorizontal-${local.paddingHorizontal}`]]: true,
+    // [styles.paddingHorizontalSmall]: local.paddingHorizontal === 'small',
+    // [styles.paddingHorizontalMedium]: local.paddingHorizontal === 'medium',
+    // [styles.paddingHorizontalLarge]: local.paddingHorizontal === 'large',
+
     [styles.backgroundGray0]: local.fill === 'gray-0',
     ...local.classList,
   };

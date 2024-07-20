@@ -10,7 +10,7 @@ function Component(
       <View fill="gray-0" style={{ width: '1400px', height: '200px', 'border': '1px solid hsl(0, 0%, 0%)', 'border-top': '1px solid hsl(0, 0%, 15%)' }} {...props}>
         {props.children}
       </View>
-      <View horizontal paddingHorizontal="large">
+      <View horizontal paddingHorizontal="xlarge">
         <View width="150px" height="20px" style={{ background: 'hsl(0, 0%, 5%)' }} />
         <View flex />
         <View width="150px" height="20px" style={{ background: 'hsl(0, 0%, 5%)' }} />
@@ -52,8 +52,14 @@ function App() {
       onDrop={handleDrop}
     >
       <Component horizontal>
-        <View>hello</View>
-        <View>hello</View>
+        <View style={{ padding: '24px 32px' }}>
+          <Button width="80px" height="50px" style={{ appearance: 'none', background: 'none', border: '2px solid black', "border-radius": '4px' }}>
+            button
+          </Button>
+        </View>
+        <View style={{ background: 'black', width: '600px' }}>
+
+        </View>
       </Component>
       <Component horizontal>
         <View>hello</View>
