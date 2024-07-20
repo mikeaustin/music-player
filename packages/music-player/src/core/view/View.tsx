@@ -11,6 +11,9 @@ type AlignShorthand = `${AlignVertical} ${AlignHorizontal}`;
 
 type PaddingHorizontal = 'small' | 'medium' | 'large';
 
+// type Values = 10;
+type Color = `gray-${number}`;
+
 type ViewProps<T extends ElementType> = {
   as?: T,
   flex?: boolean;
@@ -19,8 +22,12 @@ type ViewProps<T extends ElementType> = {
   alignHorizontal?: AlignHorizontal;
   alignVertical?: AlignVertical;
   paddingHorizontal?: PaddingHorizontal;
+  fill?: Color;
+  width?: string;
+  height?: string;
   children?: JSX.Element;
   classList?: ComponentProps<T>['classList'];
+  style?: JSX.CSSProperties;
 };
 
 function View<T extends ElementType = 'div'>(
@@ -30,7 +37,9 @@ function View<T extends ElementType = 'div'>(
     'as', 'flex', 'horizontal',
     'align', 'alignHorizontal', 'alignVertical',
     'paddingHorizontal',
-    'children', 'classList',
+    'fill',
+    'width', 'height',
+    'children', 'classList', 'style',
   ]);
 
   const [alignVertical, alignHorizontal] =
@@ -47,11 +56,19 @@ function View<T extends ElementType = 'div'>(
     [styles.alignVerticalCenter]: alignVertical === 'middle',
     [styles.alignVerticalRight]: alignVertical === 'bottom',
     [styles.paddingHorizontalSmall]: local.paddingHorizontal === 'small',
+    [styles.paddingHorizontalMedium]: local.paddingHorizontal === 'medium',
+    [styles.paddingHorizontalLarge]: local.paddingHorizontal === 'large',
+    [styles.backgroundGray0]: local.fill === 'gray-0',
     ...local.classList,
   };
 
+  const viewStyle = {
+    width: props.width,
+    height: props.height,
+    ...props.style,
+  };
   return (
-    <Dynamic component={local.as ?? 'div'} classList={viewClassList} {...rest}>
+    <Dynamic component={local.as ?? 'div'} style={viewStyle} classList={viewClassList} {...rest}>
       {local.children}
     </Dynamic>
   );

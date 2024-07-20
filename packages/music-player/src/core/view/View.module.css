@@ -46,3 +46,19 @@
   padding-left: 8px;
   padding-right: 8px;
 }
+
+.paddingHorizontalMedium {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.paddingHorizontalLarge {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/*  */
+
+.backgroundGray0 {
+  background: hsl(0, 0%, 5%);
+}
