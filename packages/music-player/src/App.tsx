@@ -10,6 +10,14 @@ function Component(
   return (
     <View>
       <View fill="gray-0" class={styles.componentBody} {...props}>
+        {/* <View style={{ position: 'absolute', inset: 0 }}>
+          {Array.from({ length: 100 }, () => (
+            <>
+              <View height="1px" style={{ background: 'hsl(0, 0%, 0%)' }} />
+              <View height="1px" style={{ background: 'hsl(0, 0%, 5%)' }} />
+            </>
+          ))}
+        </View> */}
         {props.children}
       </View>
       <View horizontal padding="none xlarge">
@@ -60,7 +68,23 @@ function App() {
           </Button>
         </View>
         <View padding="large xlarge" style={{ background: 'black', width: '600px' }}>
-          <Text>24 BIT &nbsp; 96 KHZ</Text>
+          <View horizontal>
+            <Text>24 BIT &nbsp; 96 KHZ</Text>
+            <View flex />
+            <Text>STEREO</Text>
+          </View>
+          <View flex />
+          <View>
+            <Text>LA GRANGE</Text>
+            <View height="8px" />
+            <Text>ZZ TOP - TRES HOMBRES</Text>
+          </View>
+          <View flex />
+          <View horizontal>
+            <Text>0:00</Text>
+            <View flex />
+            <Text>3:52</Text>
+          </View>
         </View>
       </Component>
       <Component horizontal>
