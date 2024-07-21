@@ -1,19 +1,21 @@
 import { JSX, ComponentProps, createSignal, splitProps } from 'solid-js';
 
-import { View, Button } from './core';
+import { View, Button, Text } from './core';
+
+import styles from './App.module.css';
 
 function Component(
   props: ComponentProps<typeof View>
 ) {
   return (
     <View>
-      <View fill="gray-0" style={{ width: '1400px', height: '200px', 'border': '1px solid hsl(0, 0%, 0%)', 'border-top': '1px solid hsl(0, 0%, 15%)' }} {...props}>
+      <View fill="gray-0" class={styles.componentBody} {...props}>
         {props.children}
       </View>
-      <View horizontal paddingHorizontal="xlarge">
-        <View width="150px" height="20px" style={{ background: 'hsl(0, 0%, 5%)' }} />
+      <View horizontal padding="none xlarge">
+        <View width="150px" height="20px" class={styles.componentFoot} />
         <View flex />
-        <View width="150px" height="20px" style={{ background: 'hsl(0, 0%, 5%)' }} />
+        <View width="150px" height="20px" class={styles.componentFoot} />
       </View>
     </View>
   );
@@ -52,13 +54,13 @@ function App() {
       onDrop={handleDrop}
     >
       <Component horizontal>
-        <View style={{ padding: '24px 32px' }}>
-          <Button width="80px" height="50px" style={{ appearance: 'none', background: 'none', border: '2px solid black', "border-radius": '4px' }}>
-            button
+        <View padding="large xlarge">
+          <Button align="top center" width="80px" height="50px" padding="small none" style={{ appearance: 'none', background: 'none', border: '2px solid black', "border-radius": '4px' }}>
+            <View width="20px" height="3px" style={{ background: 'hsl(200, 90%, 60%)' }} />
           </Button>
         </View>
-        <View style={{ background: 'black', width: '600px' }}>
-
+        <View padding="large xlarge" style={{ background: 'black', width: '600px' }}>
+          <Text>24 BIT &nbsp; 96 KHZ</Text>
         </View>
       </Component>
       <Component horizontal>

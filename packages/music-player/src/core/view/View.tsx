@@ -9,7 +9,8 @@ type AlignHorizontal = 'left' | 'center' | 'right';
 type AlignVertical = 'top' | 'middle' | 'bottom';
 type AlignShorthand = `${AlignVertical} ${AlignHorizontal}`;
 
-type PaddingHorizontal = 'small' | 'medium' | 'large' | 'xlarge';
+type Padding = 'none' | 'small' | 'medium' | 'large' | 'xlarge';
+type PaddingShorthand = `${Padding} ${Padding}`;
 
 // type Values = 10;
 type Color = `gray-${number}`;
@@ -21,11 +22,14 @@ type ViewProps<T extends ElementType> = {
   align?: AlignShorthand;
   alignHorizontal?: AlignHorizontal;
   alignVertical?: AlignVertical;
-  paddingHorizontal?: PaddingHorizontal;
+  padding?: PaddingShorthand;
+  paddingVertical?: Padding;
+  paddingHorizontal?: Padding;
   fill?: Color;
   width?: string;
   height?: string;
   children?: JSX.Element;
+  class?: string;
   classList?: ComponentProps<T>['classList'];
   style?: JSX.CSSProperties;
 };
@@ -36,14 +40,16 @@ function View<T extends ElementType = 'div'>(
   const [local, rest] = splitProps(props, [
     'as', 'flex', 'horizontal',
     'align', 'alignHorizontal', 'alignVertical',
-    'paddingHorizontal',
+    'padding', 'paddingVertical', 'paddingHorizontal',
     'fill',
     'width', 'height',
-    'children', 'classList', 'style',
+    'children', 'class', 'classList', 'style',
   ]);
 
   const [alignVertical, alignHorizontal] =
     local.align?.split(' ') ?? [local.alignVertical, local.alignHorizontal];
+  const [paddingVertical, paddingHorizontal] =
+    local.padding?.split(' ') ?? [local.paddingVertical, local.paddingHorizontal];
 
   const viewClassList = {
     [styles.View]: true,
@@ -56,13 +62,15 @@ function View<T extends ElementType = 'div'>(
     [styles.alignVerticalCenter]: alignVertical === 'middle',
     [styles.alignVerticalRight]: alignVertical === 'bottom',
 
-    [styles[`paddingHorizontal-${local.paddingHorizontal}`]]: true,
+    [styles[`paddingVertical-${paddingVertical}`]]: true,
+    [styles[`paddingHorizontal-${paddingHorizontal}`]]: true,
     // [styles.paddingHorizontalSmall]: local.paddingHorizontal === 'small',
     // [styles.paddingHorizontalMedium]: local.paddingHorizontal === 'medium',
     // [styles.paddingHorizontalLarge]: local.paddingHorizontal === 'large',
 
     [styles.backgroundGray0]: local.fill === 'gray-0',
     ...local.classList,
+    [local.class ?? '']: true
   };
 
   const viewStyle = {

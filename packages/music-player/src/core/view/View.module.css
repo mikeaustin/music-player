@@ -42,6 +42,11 @@
 
 /*  */
 
+.paddingHorizontal-none {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .paddingHorizontal-small {
   padding-left: 8px;
   padding-right: 8px;
@@ -60,6 +65,33 @@
 .paddingHorizontal-xlarge {
   padding-left: 32px;
   padding-right: 32px;
+}
+
+/*  */
+
+.paddingVertical-none {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.paddingVertical-small {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.paddingVertical-medium {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.paddingVertical-large {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.paddingVertical-xlarge {
+  padding-top: 32px;
+  padding-bottom: 32px;
 }
 
 /*  */

@@ -1,0 +1,13 @@
+.Component {
+}
+
+.componentBody {
+  width: 1400px;
+  height: 200px;
+  border: 1px solid hsl(0, 0%, 0%);
+  border-top: 1px solid hsl(0, 0%, 15%);
+}
+
+.componentFoot {
+  background: linear-gradient(90deg, hsl(0, 0%, 0%), hsl(0, 0%, 5%), hsl(0, 0%, 0%));
+}

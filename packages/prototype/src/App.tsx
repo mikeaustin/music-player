@@ -32,7 +32,7 @@ function TapeGear(props: {
 }) {
   return (
     <div style={{ position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '-27px', left: '-27px', width: '89px', height: '89px', xbackground: 'red', border: '20px solid hsl(0, 0%, 4%)', "border-radius": '9999px' }} />
+      <div style={{ position: 'absolute', top: '-27px', left: '-27px', width: '89px', height: '89px', border: '20px solid hsl(0, 0%, 4%)', "border-radius": '9999px' }} />
 
       <div style={{ position: 'relative', width: '35px', height: '35px', border: '3px solid hsl(0, 0%, 50%)', "border-radius": '9999px', animation: props.isPlaying ? `${styles.spin} 10s infinite linear` : undefined }}>
         <div style={{ position: 'absolute', left: 'calc(50% - 5px)', top: 'calc(50% - 2.5px)', transform: 'rotateZ(0deg) translate(0, -13px)', width: 0, height: 0, "border-left": '5px solid transparent', "border-right": '5px solid transparent', "border-top": '5px solid hsl(0, 0%, 50%)' }} />
@@ -157,7 +157,7 @@ function Component(props: {
 
         context.lineWidth = window.devicePixelRatio;
 
-        context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 4.9%)' : 'hsl(0, 0%, 5%)';
+        context.strokeStyle = Math.random() > 0.5 ? 'hsl(0, 0%, 4.5%)' : 'hsl(0, 0%, 5%)';
         // context.strokeStyle = y % 2 === 0 ? 'hsl(0, 0%, 0%)' : 'hsl(0, 0%, 5%)';
 
         context.moveTo(0, y);
