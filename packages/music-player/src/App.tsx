@@ -24,9 +24,11 @@ function Component(
 }
 
 type DATPlayerProps = {
-  audioContext: AudioContext;
+  audioNode: AudioBufferSourceNode;
   file: File | null;
 };
+
+//
 
 function DATPlayer(props: DATPlayerProps) {
   const [songTitle, setSongTitle] = createSignal('');
@@ -40,16 +42,12 @@ function DATPlayer(props: DATPlayerProps) {
 
   createEffect(async () => {
     if (props.file) {
-      const track = new AudioBufferSourceNode(props.audioContext, {
-        buffer: await props.audioContext.decodeAudioData(await props.file.arrayBuffer()),
-      });
-
       const metadata = await parseBuffer(new Uint8Array(await props.file.arrayBuffer()));
 
       console.log(metadata);
 
       setInterval(() => {
-        setCurrentTime(props.audioContext.currentTime);
+        setCurrentTime(props.audioNode.context.currentTime);
       }, 1000);
 
       metadata.common.title && setSongTitle(metadata.common.title);
@@ -59,11 +57,6 @@ function DATPlayer(props: DATPlayerProps) {
       metadata.format.bitsPerSample && setBitsPerSample(metadata.format.bitsPerSample);
       metadata.format.sampleRate && setSampleRate(metadata.format.sampleRate);
       metadata.format.numberOfChannels && setChannelsCount(metadata.format.numberOfChannels);
-
-      track
-        .connect(props.audioContext.destination);
-
-      track.start();
     }
   });
 
@@ -120,17 +113,17 @@ function DATPlayer(props: DATPlayerProps) {
   );
 }
 
+//
+
 type ReceiverProps = {
-  audioContext: AudioContext;
+  audioNode: GainNode;
   file: File | null;
 };
 
 function Receiver(props: ReceiverProps) {
   const handleVolumeValueChange = (volume: number) => {
-
+    props.audioNode.gain.value = volume;
   };
-
-  const gainNode = new GainNode(props.audioContext);
 
   return (
     <Component horizontal>
@@ -150,16 +143,7 @@ function Receiver(props: ReceiverProps) {
   );
 }
 
-async function createDATPlayerComponent(audioContext: AudioContext, file: File | null) {
-  const track = new AudioBufferSourceNode(audioContext, {
-    buffer: await audioContext.decodeAudioData(await file.arrayBuffer()),
-  });
-
-  return {
-    node: track,
-    element: <DATPlayer audioContext={audioContext} file={file} />
-  };
-}
+//
 
 class DATPlayerComponent {
   static async create(audioContext: AudioContext, file: File | null) {
@@ -170,32 +154,53 @@ class DATPlayerComponent {
 
       return new DATPlayerComponent(audioNode, file);
     }
+
+    throw Error('Error');
   }
 
-  // audioNode: AudioNode;
   element: JSX.Element;
 
-  constructor(audioNode: AudioNode, public file: File | null) {
-    this.element = <Receiver audioNode={audioNode} file={file} />;
+  constructor(public audioNode: AudioBufferSourceNode, public file: File | null) {
+    this.element = <DATPlayer audioNode={audioNode} file={file} />;
   }
 }
 
 class ReceiverComponent {
-  audioNode: AudioNode;
+  static async create(audioContext: AudioContext, file: File | null) {
+    const audioNode = new GainNode(audioContext);
+
+    return new ReceiverComponent(audioNode, file);
+  }
+
   element: JSX.Element;
 
-  constructor(public audioContext: AudioContext, public file: File | null) {
-    this.audioNode = new GainNode(audioContext);
-    this.element = <Receiver audioContext={audioContext} file={file} />;
+  constructor(public audioNode: GainNode, public file: File | null) {
+    this.element = <Receiver audioNode={audioNode} file={file} />;
   }
 }
+
+//
 
 function App() {
   const [file, setFile] = createSignal<File | null>(null);
 
   const audioContext = new AudioContext();
 
-  const datplayer = DATPlayerComponent.create(audioContext, file());
+  let datplayer: DATPlayerComponent;
+  let receiver: ReceiverComponent;
+
+  createEffect(async () => {
+    if (file()) {
+      datplayer = await DATPlayerComponent.create(audioContext, file());
+      receiver = await ReceiverComponent.create(audioContext, file());
+
+      datplayer.audioNode
+        .connect(receiver.audioNode)
+        .connect(audioContext.destination);
+
+      datplayer.audioNode.start();
+    }
+  });
 
   const handleDragOver: JSX.EventHandler<HTMLDivElement, DragEvent> = (event) => {
     event.preventDefault();
@@ -217,8 +222,8 @@ function App() {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <DATPlayer audioContext={audioContext} file={file()} />
-      <Receiver audioContext={audioContext} file={file()} />
+      <DATPlayer audioNode={datplayer?.audioNode} file={file()} />
+      <Receiver audioNode={receiver?.audioNode} file={file()} />
     </View>
   );
 }
