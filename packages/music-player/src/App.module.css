@@ -6,6 +6,8 @@
   height: 200px;
   border: 1px solid hsl(0, 0%, 0%);
   border-top: 1px solid hsl(0, 0%, 15%);
+  background: linear-gradient(0deg, hsl(0, 0%, 3%), hsl(0, 0%, 6%));
+  background: 0 0 / 100% 2px linear-gradient(0deg, hsl(0, 0%, 2%) 50%, hsl(0, 0%, 5%));
 }
 
 .componentFoot {

@@ -1,4 +1,5 @@
 import { JSX, ComponentProps, createSignal, splitProps } from 'solid-js';
+import { parseBuffer } from 'music-metadata';
 
 import { View, Button, Text } from './core';
 
@@ -10,14 +11,6 @@ function Component(
   return (
     <View>
       <View fill="gray-0" class={styles.componentBody} {...props}>
-        {/* <View style={{ position: 'absolute', inset: 0 }}>
-          {Array.from({ length: 100 }, () => (
-            <>
-              <View height="1px" style={{ background: 'hsl(0, 0%, 0%)' }} />
-              <View height="1px" style={{ background: 'hsl(0, 0%, 5%)' }} />
-            </>
-          ))}
-        </View> */}
         {props.children}
       </View>
       <View horizontal padding="none xlarge">
@@ -46,6 +39,10 @@ function App() {
         buffer: await audioContext.decodeAudioData(await file.arrayBuffer()),
       });
 
+      const metadata = await parseBuffer(new Uint8Array(await file.arrayBuffer()));
+
+      console.log(metadata);
+
       track
         .connect(audioContext.destination);
 
@@ -67,7 +64,8 @@ function App() {
             <View width="20px" height="3px" style={{ background: 'hsl(200, 90%, 60%)' }} />
           </Button>
         </View>
-        <View padding="large xlarge" style={{ background: 'black', width: '600px' }}>
+        <View padding="large xlarge" style={{ background: 'black', width: '600px', 'border-left': '1px solid black', 'border-right': '1px solid black' }}>
+          <View style={{ position: 'absolute', inset: 0, background: 'linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px) 0px 0px / 100% 300px no-repeat' }} />
           <View horizontal>
             <Text>24 BIT &nbsp; 96 KHZ</Text>
             <View flex />

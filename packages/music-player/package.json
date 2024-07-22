@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "music-metadata": "^10.0.0",
     "solid-js": "^1.8.17"
   },
   "devDependencies": {
