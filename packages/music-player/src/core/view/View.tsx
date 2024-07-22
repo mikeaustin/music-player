@@ -73,13 +73,14 @@ function View<T extends ElementType = 'div'>(
     [local.class ?? '']: true
   };
 
-  const viewStyle = {
-    width: props.width,
-    height: props.height,
-    ...props.style,
-  };
+  const viewStyle = () => ({
+    width: local.width,
+    height: local.height,
+    ...local.style,
+  });
+
   return (
-    <Dynamic component={local.as ?? 'div'} style={viewStyle} classList={viewClassList} {...rest}>
+    <Dynamic component={local.as ?? 'div'} style={viewStyle()} classList={viewClassList} {...rest}>
       {local.children}
     </Dynamic>
   );

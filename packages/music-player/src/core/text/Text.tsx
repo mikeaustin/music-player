@@ -1,10 +1,17 @@
-import { ComponentProps } from 'solid-js';
+import { JSX, ComponentProps } from 'solid-js';
 
 import View from "../view";
 
 type TextProps = {
-  children: string;
+  children?: JSX.Element;
+  // children?: Omit<JSX.Element, 'Node'>;
 };
+
+type ExpandRecursively<T> = T extends object
+  ? T extends infer O ? { [K in keyof O]: ExpandRecursively<O[K]> } : never
+  : T;
+
+type XXX = ExpandRecursively<JSX.Element>;
 
 function Text(
   props: TextProps & ComponentProps<typeof View>

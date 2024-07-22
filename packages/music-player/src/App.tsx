@@ -1,4 +1,4 @@
-import { JSX, ComponentProps, createSignal, splitProps } from 'solid-js';
+import { JSX, ComponentProps, createSignal, createEffect, splitProps } from 'solid-js';
 import { parseBuffer } from 'music-metadata';
 
 import { View, Button, Text } from './core';
@@ -23,6 +23,15 @@ function Component(
 }
 
 function App() {
+  const [songTitle, setSongTitle] = createSignal('');
+  const [albumTitle, setAlbumTitle] = createSignal('');
+  const [artistName, setArtistName] = createSignal('');
+  const [songLength, setSongLength] = createSignal(0);
+  const [bitsPerSample, setBitsPerSample] = createSignal(0);
+  const [sampleRate, setSampleRate] = createSignal(0);
+  const [channelsCount, setChannelsCount] = createSignal(0);
+  const [currentTime, setCurrentTime] = createSignal(0);
+
   const audioContext = new AudioContext();
 
   const handleDragOver: JSX.EventHandler<HTMLDivElement, DragEvent> = (event) => {
@@ -42,6 +51,20 @@ function App() {
       const metadata = await parseBuffer(new Uint8Array(await file.arrayBuffer()));
 
       console.log(metadata);
+
+      setInterval(() => {
+        // console.log(audioContext.currentTime / songLength());
+
+        setCurrentTime(audioContext.currentTime);
+      }, 1000);
+
+      metadata.common.title && setSongTitle(metadata.common.title);
+      metadata.common.album && setAlbumTitle(metadata.common.album);
+      metadata.common.artist && setArtistName(metadata.common.artist);
+      metadata.format.duration && setSongLength(metadata.format.duration);
+      metadata.format.bitsPerSample && setBitsPerSample(metadata.format.bitsPerSample);
+      metadata.format.sampleRate && setSampleRate(metadata.format.sampleRate);
+      metadata.format.numberOfChannels && setChannelsCount(metadata.format.numberOfChannels);
 
       track
         .connect(audioContext.destination);
@@ -64,24 +87,46 @@ function App() {
             <View width="20px" height="3px" style={{ background: 'hsl(200, 90%, 60%)' }} />
           </Button>
         </View>
-        <View padding="large xlarge" style={{ background: 'black', width: '600px', 'border-left': '1px solid black', 'border-right': '1px solid black' }}>
+        <View padding="large large" style={{ background: 'black', width: '600px', 'border-left': '1px solid black', 'border-right': '1px solid black' }}>
           <View style={{ position: 'absolute', inset: 0, background: 'linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px) 0px 0px / 100% 300px no-repeat' }} />
           <View horizontal>
-            <Text>24 BIT &nbsp; 96 KHZ</Text>
+            <Text>
+              {bitsPerSample()} BIT &nbsp; {sampleRate() / 1000} KHZ
+            </Text>
             <View flex />
-            <Text>STEREO</Text>
+            <Text>
+              {channelsCount() === 2 ? 'STEREO' : 'MONO'}
+            </Text>
           </View>
           <View flex />
           <View>
-            <Text>LA GRANGE</Text>
+            <Text>
+              {songTitle().toUpperCase()}
+            </Text>
             <View height="8px" />
-            <Text>ZZ TOP - TRES HOMBRES</Text>
+            <Text>
+              {artistName() && (
+                <>
+                  {artistName().toUpperCase()} — {albumTitle().toUpperCase()}
+                </>
+              )}
+            </Text>
           </View>
           <View flex />
-          <View horizontal>
-            <Text>0:00</Text>
-            <View flex />
-            <Text>3:52</Text>
+          <View>
+            <View horizontal style={{ height: '3px', background: 'hsla(200, 90%, 60%, 0.5)' }}>
+              <View width={`${currentTime() / songLength() * 100}%`} style={{ background: 'hsl(200, 90%, 60%)' }} />
+            </View>
+            <View height="8px" />
+            <View horizontal>
+              <Text>
+                {Math.floor(currentTime() / 60)}:{`${Math.floor(currentTime() % 60)}`.padStart(2, '0')}
+              </Text>
+              <View flex />
+              <Text>
+                {Math.floor(songLength() / 60)}:{`${Math.floor(songLength() % 60)}`.padStart(2, '0')}
+              </Text>
+            </View>
           </View>
         </View>
       </Component>
