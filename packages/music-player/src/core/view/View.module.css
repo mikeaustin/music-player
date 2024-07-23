@@ -4,6 +4,10 @@
   position: relative;
 }
 
+.absolute {
+  position: absolute;
+}
+
 .flex {
   flex: 1
 }

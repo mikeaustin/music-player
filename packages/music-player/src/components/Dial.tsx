@@ -51,8 +51,8 @@ function Dial(props: {
   return (
     <View>
       <View
+        absolute
         style={{
-          position: 'absolute',
           inset: 0,
           "border-radius": '9999px',
           'box-shadow': '0 5px 10px hsla(0, 0%, 0%, 0.5), 0 0 0 2px hsl(0, 0%, 0%)',

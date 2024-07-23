@@ -28,6 +28,7 @@ type ViewProps<T extends ElementType> = {
   fill?: Color;
   width?: string;
   height?: string;
+  absolute?: boolean;
   children?: JSX.Element;
   class?: string;
   classList?: ComponentProps<T>['classList'];
@@ -42,7 +43,7 @@ function View<T extends ElementType = 'div'>(
     'align', 'alignHorizontal', 'alignVertical',
     'padding', 'paddingVertical', 'paddingHorizontal',
     'fill',
-    'width', 'height',
+    'width', 'height', 'absolute',
     'children', 'class', 'classList', 'style',
   ]);
 
@@ -53,6 +54,7 @@ function View<T extends ElementType = 'div'>(
 
   const viewClassList = {
     [styles.View]: true,
+    [styles.absolute]: local.absolute,
     [styles.flex]: local.flex,
     [styles.horizontal]: local.horizontal,
     [styles.alignHorizontalLeft]: alignHorizontal === 'left',

@@ -1,0 +1,6 @@
+.Button {
+  appearance: none;
+  background: none;
+  border: none;
+  background: hsl(0, 0%, 3%);
+}
