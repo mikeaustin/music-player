@@ -17,6 +17,12 @@ function Receiver(props: ReceiverProps) {
     }
   };
 
+  createEffect(() => {
+    if (props.audioNode) {
+      props.audioNode.gain.value = 0.5;
+    }
+  });
+
   return (
     <Component horizontal>
       <View padding="large xlarge">

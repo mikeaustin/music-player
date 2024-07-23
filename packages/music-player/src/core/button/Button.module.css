@@ -2,5 +2,10 @@
   appearance: none;
   background: none;
   border: none;
-  background: hsl(0, 0%, 3%);
+  background: hsl(0, 0%, 5%);
+  cursor: pointer;
+}
+
+.Button:active {
+  filter: brightness(0.85);
 }

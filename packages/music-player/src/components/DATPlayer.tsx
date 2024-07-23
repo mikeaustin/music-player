@@ -41,6 +41,22 @@ function DATPlayer(props: DATPlayerProps) {
     }
   });
 
+  const handlePlayButtonClick = () => {
+    if (props.audioNode) {
+      if (props.audioNode.context.state === 'suspended') {
+        props.audioNode.context.resume();
+      } else {
+        props.audioNode.context.suspend();
+      }
+    }
+  };
+
+  const handleStopButtonClick = () => {
+    if (props.audioNode) {
+      (props.audioNode.context as AudioContext).close();
+    }
+  };
+
   return (
     <Component horizontal>
       <View padding="large xlarge">
@@ -88,6 +104,25 @@ function DATPlayer(props: DATPlayerProps) {
               {Math.floor(songLength() / 60)}:{`${Math.floor(songLength() % 60)}`.padStart(2, '0')}
             </Text>
           </View>
+        </View>
+      </View>
+      <View padding="large xlarge">
+        <View horizontal style={{ gap: '2px', border: '2px solid black', "border-radius": '4px', overflow: 'hidden', background: 'black' }}>
+          <Button align="middle center" width="160px" height="50px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)' }} onClick={handlePlayButtonClick}>
+            PLAY / PAUSE
+          </Button>
+          <Button align="middle center" width="80px" height="50px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)' }} onClick={handleStopButtonClick}>
+            STOP
+          </Button>
+        </View>
+        <View height="8px" />
+        <View horizontal style={{ gap: '2px', border: '2px solid black', "border-radius": '4px', overflow: 'hidden', background: 'black' }}>
+          <Button align="middle center" width="120px" height="20px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)', "font-size": '8px' }}>
+            PREV
+          </Button>
+          <Button align="middle center" width="120px" height="20px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)', "font-size": '8px' }}>
+            NEXT
+          </Button>
         </View>
       </View>
     </Component>
