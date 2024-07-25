@@ -2,9 +2,10 @@
 import { JSX, ComponentProps, createSignal, createEffect, splitProps } from 'solid-js';
 import { parseBuffer } from 'music-metadata';
 
-import { View, Button, Text } from '../core';
+import { View, Button as NativeButton, Text } from '../core';
 
 import Component from './Component';
+import Button from './Button';
 
 type DATPlayerProps = {
   audioNode: AudioBufferSourceNode;

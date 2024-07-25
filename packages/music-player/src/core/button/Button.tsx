@@ -5,6 +5,7 @@ import View from '../view';
 import styles from './Button.module.css';
 
 type ButtonProps = {
+  style?: JSX.CSSProperties;
   children?: JSX.Element;
   classList?: ComponentProps<typeof View>['classList'];
 };
