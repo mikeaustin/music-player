@@ -21,18 +21,12 @@ function Oscillator(props: ReceiverProps) {
 
   const handleFrequencyValueChange = (value: number) => {
     if (props.audioNode) {
-      // console.log('here 2', value);
       setFrequency(value);
     }
   };
 
   createEffect(() => {
-    // console.log('here', frequency());
-
-    // const value = 2 ** (frequency() * Math.log2(20000 - 19)) + 19;
-    const value = 2 ** (frequency() * 9.965792 + 4.32192);
-
-    // ((2 ** (1.0 * 10)) - 1) * 16
+    const value = 2 ** (frequency() * 10 + 4.3219281);
 
     if (props.audioNode) {
       props.audioNode.frequency.value = value;
@@ -49,7 +43,7 @@ function Oscillator(props: ReceiverProps) {
       <View padding="large large" style={{ background: 'black', width: '600px', 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
         <View absolute style={{ inset: 0, background: 'linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px) 0px 0px / 100% 300px no-repeat' }} />
         <View>
-          <Text>FREQ: {(2 ** (frequency() * 9.965792 + 4.32192)).toFixed(2)}</Text>
+          <Text>FREQ: {(2 ** (frequency() * 10 + 4.3219281)).toFixed(2)}</Text>
         </View>
       </View>
       <View padding="large xlarge">
