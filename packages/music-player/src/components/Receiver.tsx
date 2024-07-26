@@ -12,22 +12,26 @@ type ReceiverProps = {
 };
 
 function Receiver(props: ReceiverProps) {
-  const handleVolumeValueChange = (volume: number) => {
+  const [volume, setVolume] = createSignal(0.5);
+
+  const handleVolumeValueChange = (value: number) => {
     if (props.audioNode) {
-      props.audioNode.gain.value = volume;
+      setVolume(value);
     }
   };
 
   createEffect(() => {
+    const value = volume();
+
     if (props.audioNode) {
-      props.audioNode.gain.value = 0.5;
+      props.audioNode.gain.value = value;
     }
   });
 
   return (
     <Component horizontal>
       <View padding="large xlarge">
-        <Button align="top center" width="80px" height="50px" padding="small none" style={{ border: '2px solid black', "border-radius": '4px' }}>
+        <Button align="top center" width="80px" height="48px" padding="small none" style={{ border: '2px solid black', "border-radius": '4px' }}>
           <View width="20px" height="3px" style={{ background: 'hsl(200, 90%, 60%)' }} />
         </Button>
       </View>
@@ -39,10 +43,13 @@ function Receiver(props: ReceiverProps) {
       </View>
       <View padding="large xlarge">
         <View horizontal style={{ gap: '2px', border: '2px solid black', "border-radius": '4px', overflow: 'hidden', background: 'black' }}>
-          <Button align="middle center" width="80px" height="50px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)' }} onClick={null}>
-            DAT PLAYER
+          <Button align="middle center" width="80px" height="48px" padding="small none" onClick={null}>
+            OSC
           </Button>
-          <Button align="middle center" width="80px" height="50px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)' }} onClick={null}>
+          <Button align="middle center" width="80px" height="48px" padding="small none" onClick={null}>
+            DAT
+          </Button>
+          <Button align="middle center" width="80px" height="48px" padding="small none" onClick={null}>
             TUNER
           </Button>
         </View>

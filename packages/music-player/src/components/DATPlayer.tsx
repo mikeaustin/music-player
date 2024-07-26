@@ -61,7 +61,7 @@ function DATPlayer(props: DATPlayerProps) {
   return (
     <Component horizontal>
       <View padding="large xlarge">
-        <Button align="top center" width="80px" height="50px" padding="small none" style={{ border: '2px solid black', "border-radius": '4px' }}>
+        <Button align="top center" width="80px" height="48px" padding="small none" style={{ border: '2px solid black', "border-radius": '4px' }}>
           <View width="20px" height="3px" style={{ background: 'hsl(200, 90%, 60%)' }} />
         </Button>
       </View>
@@ -109,19 +109,19 @@ function DATPlayer(props: DATPlayerProps) {
       </View>
       <View padding="large xlarge">
         <View horizontal style={{ gap: '2px', border: '2px solid black', "border-radius": '4px', overflow: 'hidden', background: 'black' }}>
-          <Button align="middle center" width="160px" height="50px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)' }} onClick={handlePlayButtonClick}>
-            PLAY / PAUSE
+          <Button align="middle center" width="160px" height="48px" padding="small none" onClick={handlePlayButtonClick}>
+            PLAY &nbsp;/&nbsp; PAUSE
           </Button>
-          <Button align="middle center" width="80px" height="50px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)' }} onClick={handleStopButtonClick}>
+          <Button align="middle center" width="80px" height="48px" padding="small none" onClick={handleStopButtonClick}>
             STOP
           </Button>
         </View>
         <View height="8px" />
         <View horizontal style={{ gap: '2px', border: '2px solid black', "border-radius": '4px', overflow: 'hidden', background: 'black' }}>
-          <Button align="middle center" width="120px" height="20px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)', "font-size": '8px' }}>
+          <Button align="middle center" width="120px" height="24px" padding="small none" style={{ "font-size": '8px' }}>
             PREV
           </Button>
-          <Button align="middle center" width="120px" height="20px" padding="small none" style={{ color: 'hsl(0, 0%, 50%)', "font-size": '8px' }}>
+          <Button align="middle center" width="120px" height="24px" padding="small none" style={{ "font-size": '8px' }}>
             NEXT
           </Button>
         </View>

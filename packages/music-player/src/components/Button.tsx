@@ -16,6 +16,7 @@ function Button(
 
   const buttonStyle = () => ({
     background: 'linear-gradient(hsl(0, 0%, 6%), hsl(0, 0%, 4%))',
+    color: 'hsl(0, 0%, 50%)',
     ...local.style
   });
 
