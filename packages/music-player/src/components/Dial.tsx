@@ -37,11 +37,12 @@ function Dial(props: {
   };
 
   const handleWheel: JSX.EventHandler<HTMLDivElement, WheelEvent> = (event) => {
-    console.log('handleWheel');
+    // console.log('handleWheel', event);
 
     _value = value();
 
-    const value2 = Math.max(0.0, Math.min(1.0, _value - Math.sign(event.deltaY) / 50));
+    const value2 = Math.max(0.0, Math.min(1.0, _value - -event.deltaY / 500));
+    // const value2 = Math.max(0.0, Math.min(1.0, _value - Math.sign(event.wheelDeltaY ?? event.deltaY) / 50));
 
     setValue(value2);
 

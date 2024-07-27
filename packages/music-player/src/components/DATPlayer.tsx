@@ -76,7 +76,7 @@ function DATPlayer(props: DATPlayerProps) {
             {channelsCount() === 2 ? 'STEREO' : 'MONO'}
           </Text>
         </View>
-        <View flex />
+        <View flex style={{ 'min-height': '24px' }} />
         <View>
           <Text>
             {songTitle().toUpperCase()}
@@ -90,7 +90,7 @@ function DATPlayer(props: DATPlayerProps) {
             )}
           </Text>
         </View>
-        <View flex />
+        <View flex style={{ 'min-height': '24px' }} />
         <View>
           <View horizontal style={{ height: '2px', background: 'hsla(200, 90%, 60%, 0.5)' }}>
             <View width={`${currentTime() / songLength() * 100}%`} style={{ background: 'hsl(200, 90%, 60%)' }} />
