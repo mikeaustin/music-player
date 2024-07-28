@@ -8,7 +8,6 @@ import Component from '../components/Component';
 
 type ReceiverProps = {
   audioNode: GainNode;
-  file: File | null;
 };
 
 function Receiver(props: ReceiverProps) {

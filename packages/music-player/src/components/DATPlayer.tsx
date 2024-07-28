@@ -9,7 +9,7 @@ import Button from './Button';
 
 type DATPlayerProps = {
   audioNode: AudioBufferSourceNode;
-  file: File | null;
+  file?: File | null;
 };
 
 function DATPlayer(props: DATPlayerProps) {
@@ -39,6 +39,10 @@ function DATPlayer(props: DATPlayerProps) {
       metadata.format.bitsPerSample && setBitsPerSample(metadata.format.bitsPerSample);
       metadata.format.sampleRate && setSampleRate(metadata.format.sampleRate);
       metadata.format.numberOfChannels && setChannelsCount(metadata.format.numberOfChannels);
+
+      props.audioNode.buffer = await props.audioNode.context.decodeAudioData(await props.file.arrayBuffer());
+
+      props.audioNode.start();
     }
   });
 

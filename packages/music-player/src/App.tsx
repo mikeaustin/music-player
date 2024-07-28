@@ -6,7 +6,13 @@ import Oscillator from './components/Oscillator';
 import DATPlayer from './components/DATPlayer';
 import Receiver from './components/Receiver';
 
-class OscillatorComponent {
+interface StereoComponent {
+  name: string;
+  audioNode: AudioNode;
+  element: JSX.Element;
+}
+
+class OscillatorComponent implements StereoComponent {
   static async create(audioContext: AudioContext) {
     const audioNode = new OscillatorNode(audioContext, {
       type: 'sine',
@@ -16,6 +22,7 @@ class OscillatorComponent {
     return new OscillatorComponent(audioNode);
   }
 
+  name: string = 'Oscillator';
   audioNode: OscillatorNode;
   element: JSX.Element;
 
@@ -26,40 +33,35 @@ class OscillatorComponent {
 }
 
 class DATPlayerComponent {
-  static async create(audioContext: AudioContext, file: File | null) {
-    if (file) {
-      const audioNode = new AudioBufferSourceNode(audioContext, {
-        buffer: await audioContext.decodeAudioData(await file.arrayBuffer()),
-      });
+  static async create(audioContext: AudioContext) {
+    const audioNode = new AudioBufferSourceNode(audioContext);
 
-      return new DATPlayerComponent(audioNode, file);
-    }
-
-    throw Error('Error');
+    return new DATPlayerComponent(audioNode);
   }
 
+  name: string = 'DAT Player';
   audioNode: AudioBufferSourceNode;
   element: JSX.Element;
 
-  constructor(audioNode: AudioBufferSourceNode, file: File | null) {
+  constructor(audioNode: AudioBufferSourceNode) {
     this.audioNode = audioNode;
-    this.element = <DATPlayer audioNode={audioNode} file={file} />;
+    this.element = <DATPlayer audioNode={audioNode} />;
   }
 }
 
 class ReceiverComponent {
-  static async create(audioContext: AudioContext, file: File | null) {
+  static async create(audioContext: AudioContext) {
     const audioNode = new GainNode(audioContext);
 
-    return new ReceiverComponent(audioNode, file);
+    return new ReceiverComponent(audioNode);
   }
 
   audioNode: GainNode;
-  element: JSX.Element;
+  // element: JSX.Element;
 
-  constructor(audioNode: GainNode, public file: File | null) {
+  constructor(audioNode: GainNode) {
     this.audioNode = audioNode;
-    this.element = <Receiver audioNode={audioNode} file={file} />;
+    // this.element = <Receiver audioNode={audioNode} file={file} />;
   }
 }
 
@@ -67,6 +69,7 @@ class ReceiverComponent {
 
 function App() {
   const [file, setFile] = createSignal<File | null>(null);
+  const [components, setComponents] = createSignal<StereoComponent[] | null>(null);
 
   const audioContext = new AudioContext();
 
@@ -74,12 +77,15 @@ function App() {
   let datplayer: DATPlayerComponent;
   let receiver: ReceiverComponent;
 
-
   createEffect(async () => {
     oscillator = await OscillatorComponent.create(audioContext);
-    receiver = await ReceiverComponent.create(audioContext, file());
+    datplayer = await DATPlayerComponent.create(audioContext);
 
-    oscillator.audioNode
+    receiver = await ReceiverComponent.create(audioContext);
+
+    setComponents([oscillator, datplayer]);
+
+    datplayer.audioNode
       .connect(receiver.audioNode)
       .connect(audioContext.destination);
   });
@@ -88,8 +94,8 @@ function App() {
     oscillator = await OscillatorComponent.create(audioContext);
 
     if (file()) {
-      datplayer = await DATPlayerComponent.create(audioContext, file());
-      receiver = await ReceiverComponent.create(audioContext, file());
+      datplayer = await DATPlayerComponent.create(audioContext);
+      receiver = await ReceiverComponent.create(audioContext);
 
       datplayer.audioNode
         .connect(receiver.audioNode)
@@ -117,9 +123,9 @@ function App() {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <Oscillator audioNode={oscillator?.audioNode} file={file()} />
+      <Oscillator audioNode={oscillator?.audioNode} />
       <DATPlayer audioNode={datplayer?.audioNode} file={file()} />
-      <Receiver audioNode={receiver?.audioNode} file={file()} />
+      <Receiver audioNode={receiver?.audioNode} />
     </View>
   );
 }
