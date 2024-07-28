@@ -13,55 +13,35 @@ interface StereoComponent {
 }
 
 class OscillatorComponent implements StereoComponent {
-  static async create(audioContext: AudioContext) {
-    const audioNode = new OscillatorNode(audioContext, {
-      type: 'sine',
-      frequency: 1000
-    });
-
-    return new OscillatorComponent(audioNode);
-  }
-
   name: string = 'Oscillator';
   audioNode: OscillatorNode;
   element: JSX.Element;
 
-  constructor(audioNode: OscillatorNode) {
-    this.audioNode = audioNode;
-    this.element = <Oscillator audioNode={audioNode} />;
+  constructor(audioContext: AudioContext) {
+    this.audioNode = new OscillatorNode(audioContext, {
+      type: 'sine',
+      frequency: 1000
+    });
+    this.element = <Oscillator audioNode={this.audioNode} />;
   }
 }
 
 class DATPlayerComponent {
-  static async create(audioContext: AudioContext) {
-    const audioNode = new AudioBufferSourceNode(audioContext);
-
-    return new DATPlayerComponent(audioNode);
-  }
-
   name: string = 'DAT Player';
   audioNode: AudioBufferSourceNode;
   element: JSX.Element;
 
-  constructor(audioNode: AudioBufferSourceNode) {
-    this.audioNode = audioNode;
-    this.element = <DATPlayer audioNode={audioNode} />;
+  constructor(audioContext: AudioContext) {
+    this.audioNode = new AudioBufferSourceNode(audioContext);
+    this.element = <DATPlayer audioNode={this.audioNode} />;
   }
 }
 
 class ReceiverComponent {
-  static async create(audioContext: AudioContext) {
-    const audioNode = new GainNode(audioContext);
-
-    return new ReceiverComponent(audioNode);
-  }
-
   audioNode: GainNode;
-  // element: JSX.Element;
 
-  constructor(audioNode: GainNode) {
-    this.audioNode = audioNode;
-    // this.element = <Receiver audioNode={audioNode} file={file} />;
+  constructor(audioContext: AudioContext) {
+    this.audioNode = new GainNode(audioContext);
   }
 }
 
@@ -78,31 +58,16 @@ function App() {
   let receiver: ReceiverComponent;
 
   createEffect(async () => {
-    oscillator = await OscillatorComponent.create(audioContext);
-    datplayer = await DATPlayerComponent.create(audioContext);
+    oscillator = new OscillatorComponent(audioContext);
+    datplayer = new DATPlayerComponent(audioContext);
 
-    receiver = await ReceiverComponent.create(audioContext);
+    receiver = new ReceiverComponent(audioContext);
 
     setComponents([oscillator, datplayer]);
 
     datplayer.audioNode
       .connect(receiver.audioNode)
       .connect(audioContext.destination);
-  });
-
-  createEffect(async () => {
-    oscillator = await OscillatorComponent.create(audioContext);
-
-    if (file()) {
-      datplayer = await DATPlayerComponent.create(audioContext);
-      receiver = await ReceiverComponent.create(audioContext);
-
-      datplayer.audioNode
-        .connect(receiver.audioNode)
-        .connect(audioContext.destination);
-
-      datplayer.audioNode.start();
-    }
   });
 
   const handleDragOver: JSX.EventHandler<HTMLDivElement, DragEvent> = (event) => {
