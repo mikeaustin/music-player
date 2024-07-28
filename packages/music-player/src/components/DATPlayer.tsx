@@ -83,14 +83,16 @@ function DATPlayer(props: DATPlayerProps) {
         <View flex style={{ 'min-height': '24px' }} />
         <View>
           <Text>
-            {songTitle().toUpperCase()}
+            {songTitle() ? songTitle().toUpperCase() : <>&nbsp;</>}
           </Text>
           <View height="8px" />
           <Text>
-            {artistName() && (
+            {artistName() ? (
               <>
                 {artistName().toUpperCase()} — {albumTitle().toUpperCase()}
               </>
+            ) : (
+              <>&nbsp;</>
             )}
           </Text>
         </View>
