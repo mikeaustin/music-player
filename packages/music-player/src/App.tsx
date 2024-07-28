@@ -7,13 +7,13 @@ import Oscillator from './components/Oscillator';
 import DATPlayer from './components/DATPlayer';
 import Receiver from './components/Receiver';
 
-interface StereoComponent<T extends AudioNode> {
+interface StereoPlugin<T extends AudioNode> {
   name: string;
   audioNode: AudioNode;
   component: Component<{ audioNode: T, file: File | null; }>;
 }
 
-class OscillatorComponent implements StereoComponent<OscillatorNode> {
+class OscillatorPlugin implements StereoPlugin<OscillatorNode> {
   name: string = 'Oscillator';
   audioNode: OscillatorNode;
   component = Oscillator;
@@ -26,7 +26,7 @@ class OscillatorComponent implements StereoComponent<OscillatorNode> {
   }
 }
 
-class DATPlayerComponent implements StereoComponent<AudioBufferSourceNode> {
+class DATPlayerPlugin implements StereoPlugin<AudioBufferSourceNode> {
   name: string = 'DAT Player';
   audioNode: AudioBufferSourceNode;
   component = DATPlayer;
@@ -36,7 +36,7 @@ class DATPlayerComponent implements StereoComponent<AudioBufferSourceNode> {
   }
 }
 
-class ReceiverComponent {
+class ReceiverController {
   audioNode: GainNode;
 
   constructor(audioContext: AudioContext) {
@@ -48,24 +48,24 @@ class ReceiverComponent {
 
 function App() {
   const [file, setFile] = createSignal<File | null>(null);
-  const [components, setComponents] = createSignal<StereoComponent<any>[] | null>(null);
+  const [components, setComponents] = createSignal<StereoPlugin<any>[] | null>(null);
 
   const audioContext = new AudioContext();
 
-  let oscillator: OscillatorComponent;
-  let datplayer: DATPlayerComponent;
-  let receiver: ReceiverComponent;
+  let oscillatorPlugin: OscillatorPlugin;
+  let datplayerPlugin: DATPlayerPlugin;
+  let receiverPlugin: ReceiverController;
 
   createEffect(async () => {
-    oscillator = new OscillatorComponent(audioContext);
-    datplayer = new DATPlayerComponent(audioContext);
+    oscillatorPlugin = new OscillatorPlugin(audioContext);
+    datplayerPlugin = new DATPlayerPlugin(audioContext);
 
-    receiver = new ReceiverComponent(audioContext);
+    receiverPlugin = new ReceiverController(audioContext);
 
-    setComponents([oscillator, datplayer]);
+    setComponents([oscillatorPlugin, datplayerPlugin]);
 
-    datplayer.audioNode
-      .connect(receiver.audioNode)
+    datplayerPlugin.audioNode
+      .connect(receiverPlugin.audioNode)
       .connect(audioContext.destination);
   });
 
@@ -90,9 +90,7 @@ function App() {
       {components()?.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
-      {/* <Oscillator audioNode={oscillator?.audioNode} />
-      <DATPlayer audioNode={datplayer?.audioNode} file={file()} /> */}
-      <Receiver audioNode={receiver?.audioNode} />
+      <Receiver audioNode={receiverPlugin?.audioNode} />
     </View>
   );
 }
