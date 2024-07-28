@@ -6,11 +6,12 @@ import Dial from '../components/Dial';
 import Button from '../components/Button';
 import Component from '../components/Component';
 
-type ReceiverProps = {
+type OscillatorProps = {
   audioNode: OscillatorNode;
+  file: File | null;
 };
 
-function Oscillator(props: ReceiverProps) {
+function Oscillator(props: OscillatorProps) {
   const [frequency, setFrequency] = createSignal(0.5);
   const [waveType, setWaveType] = createSignal('sine');
 

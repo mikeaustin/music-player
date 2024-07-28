@@ -9,7 +9,7 @@ import Button from './Button';
 
 type DATPlayerProps = {
   audioNode: AudioBufferSourceNode;
-  file?: File | null;
+  file: File | null;
 };
 
 function DATPlayer(props: DATPlayerProps) {

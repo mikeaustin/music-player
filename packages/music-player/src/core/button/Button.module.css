@@ -7,5 +7,5 @@
 }
 
 .Button:active {
-  filter: brightness(0.85);
+  filter: brightness(0.75);
 }
