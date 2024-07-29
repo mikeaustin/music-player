@@ -38,9 +38,11 @@ class DATPlayerPlugin implements StereoPlugin<AudioBufferSourceNode> {
 
 class ReceiverController {
   audioNode: GainNode;
+  analyserNode: AnalyserNode;
 
   constructor(audioContext: AudioContext) {
     this.audioNode = new GainNode(audioContext);
+    this.analyserNode = new AnalyserNode(audioContext);
   }
 }
 
@@ -64,8 +66,10 @@ function App() {
 
     setComponents([oscillatorPlugin, datplayerPlugin]);
 
+    // oscillatorPlugin.audioNode
     datplayerPlugin.audioNode
       .connect(receiverPlugin.audioNode)
+      .connect(receiverPlugin.analyserNode)
       .connect(audioContext.destination);
   });
 
@@ -90,7 +94,7 @@ function App() {
       {components()?.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
-      <Receiver audioNode={receiverPlugin?.audioNode} />
+      <Receiver audioNode={receiverPlugin?.audioNode} analyserNode={receiverPlugin.analyserNode} />
     </View>
   );
 }
