@@ -1,5 +1,6 @@
 import { JSX, Component, ValidComponent, ComponentProps, createSignal, createEffect, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
+import { parseBuffer, IAudioMetadata } from 'music-metadata';
 
 import { View, Button, Text } from './core';
 
@@ -50,6 +51,7 @@ class ReceiverController {
 
 function App() {
   const [file, setFile] = createSignal<File | null>(null);
+  const [pictureUrl, setPictureUrl] = createSignal<string>();
   const [components, setComponents] = createSignal<StereoPlugin<any>[] | null>(null);
 
   const audioContext = new AudioContext();
@@ -80,7 +82,19 @@ function App() {
   const handleDrop: JSX.EventHandler<HTMLDivElement, DragEvent> = async (event) => {
     event.preventDefault();
 
-    setFile(event.dataTransfer?.items[0]?.getAsFile() ?? null);
+    const file = event.dataTransfer?.items[0]?.getAsFile() ?? null;
+
+    if (file) {
+      setFile(file);
+
+      const metaData = await parseBuffer(new Uint8Array(await file.arrayBuffer()));
+
+      if (metaData.common.picture) {
+        const blob = new Blob([metaData.common.picture[0].data]);
+
+        setPictureUrl(URL.createObjectURL(blob));
+      }
+    }
   };
 
   return (
@@ -91,6 +105,12 @@ function App() {
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
+      {pictureUrl() && (
+        <View style={{ "box-shadow": '0 0 0 0.5px hsla(0, 0%, 100%, 0.1)' }}>
+          <img src={pictureUrl()} width="400" height="400" />
+        </View>
+      )}
+      <View height="20px" />
       {components()?.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}

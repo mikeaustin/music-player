@@ -1,6 +1,5 @@
-
 import { JSX, ComponentProps, createSignal, createEffect, splitProps } from 'solid-js';
-import { parseBuffer } from 'music-metadata';
+import { parseBuffer, IAudioMetadata } from 'music-metadata';
 
 import { View, Button as NativeButton, Text } from '../core';
 
@@ -13,32 +12,25 @@ type DATPlayerProps = {
 };
 
 function DATPlayer(props: DATPlayerProps) {
-  const [songTitle, setSongTitle] = createSignal('');
-  const [albumTitle, setAlbumTitle] = createSignal('');
-  const [artistName, setArtistName] = createSignal('');
-  const [songLength, setSongLength] = createSignal(0);
-  const [bitsPerSample, setBitsPerSample] = createSignal(0);
-  const [sampleRate, setSampleRate] = createSignal(0);
-  const [channelsCount, setChannelsCount] = createSignal(0);
+  const [metaData, setMetaData] = createSignal<IAudioMetadata>();
+  const [pictureUrl, setPictureUrl] = createSignal<string>();
   const [currentTime, setCurrentTime] = createSignal(0);
 
   createEffect(async () => {
     if (props.file) {
-      const metadata = await parseBuffer(new Uint8Array(await props.file.arrayBuffer()));
+      const metaData = await parseBuffer(new Uint8Array(await props.file.arrayBuffer()));
 
-      console.log(metadata);
+      setMetaData(metaData);
+
+      console.log(metaData);
+
+      const blob = new Blob(metaData.common.picture[0].data);
+
+      setPictureUrl(URL.createObjectURL(blob));
 
       setInterval(() => {
         setCurrentTime(props.audioNode.context.currentTime);
       }, 1000);
-
-      metadata.common.title && setSongTitle(metadata.common.title);
-      metadata.common.album && setAlbumTitle(metadata.common.album);
-      metadata.common.artist && setArtistName(metadata.common.artist);
-      metadata.format.duration && setSongLength(metadata.format.duration);
-      metadata.format.bitsPerSample && setBitsPerSample(metadata.format.bitsPerSample);
-      metadata.format.sampleRate && setSampleRate(metadata.format.sampleRate);
-      metadata.format.numberOfChannels && setChannelsCount(metadata.format.numberOfChannels);
 
       props.audioNode.buffer = await props.audioNode.context.decodeAudioData(await props.file.arrayBuffer());
 
@@ -73,23 +65,27 @@ function DATPlayer(props: DATPlayerProps) {
         <View absolute style={{ inset: 0, background: 'linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px) 0px 0px / 100% 300px no-repeat' }} />
         <View horizontal>
           <Text>
-            {bitsPerSample()} BIT &nbsp; {sampleRate() / 1000} KHZ
+            {metaData() && (
+              <>
+                {metaData()?.format.bitsPerSample} BIT &nbsp; {metaData()?.format.sampleRate / 1000} KHZ
+              </>
+            )}
           </Text>
           <View flex />
           <Text>
-            {channelsCount() === 2 ? 'STEREO' : 'MONO'}
+            {metaData()?.format.numberOfChannels === 2 ? 'STEREO' : 'MONO'}
           </Text>
         </View>
         <View flex style={{ 'min-height': '24px' }} />
         <View>
-          <Text>
-            {songTitle() ? songTitle().toUpperCase() : <>&nbsp;</>}
+          <Text style={{ "white-space": 'nowrap', overflow: 'hidden', 'text-overflow': 'ellipsis' }}>
+            {metaData() ? metaData()?.common.title?.toUpperCase() : <>&nbsp;</>}
           </Text>
           <View height="8px" />
-          <Text>
-            {artistName() ? (
+          <Text style={{ "white-space": 'nowrap', overflow: 'hidden', 'text-overflow': 'ellipsis' }}>
+            {metaData() ? (
               <>
-                {artistName().toUpperCase()} — {albumTitle().toUpperCase()}
+                {metaData()?.common.artist?.toUpperCase()} — {metaData()?.common.album?.toUpperCase()}
               </>
             ) : (
               <>&nbsp;</>
@@ -99,7 +95,7 @@ function DATPlayer(props: DATPlayerProps) {
         <View flex style={{ 'min-height': '24px' }} />
         <View>
           <View horizontal style={{ height: '2px', background: 'hsla(200, 90%, 60%, 0.5)' }}>
-            <View width={`${currentTime() / songLength() * 100}%`} style={{ background: 'hsl(200, 90%, 60%)' }} />
+            <View width={`${currentTime() / metaData()?.format.duration * 100}%`} style={{ background: 'hsl(200, 90%, 60%)' }} />
           </View>
           <View height="8px" />
           <View horizontal>
@@ -108,7 +104,11 @@ function DATPlayer(props: DATPlayerProps) {
             </Text>
             <View flex />
             <Text>
-              {Math.floor(songLength() / 60)}:{`${Math.floor(songLength() % 60)}`.padStart(2, '0')}
+              {metaData() && (
+                <>
+                  {Math.floor(metaData()?.format.duration / 60)}:{`${Math.floor(metaData()?.format.duration % 60)}`.padStart(2, '0')}
+                </>
+              )}
             </Text>
           </View>
         </View>
