@@ -106,8 +106,9 @@ function App() {
       onDrop={handleDrop}
     >
       {pictureUrl() && (
-        <View style={{ "box-shadow": '0 0 0 0.5px hsla(0, 0%, 100%, 0.1)' }}>
-          <img src={pictureUrl()} width="400" height="400" />
+        <View style={{ xtransform: 'perspective(1000px) rotateX(22deg)', "transform-origin": '50% 100%' }}>
+          <View style={{ position: 'absolute', inset: 0, "box-shadow": 'inset 0 0 0 1px hsla(0, 0%, 100%, 0.1)' }} />
+          <img src={pictureUrl()} width="300" height="300" />
         </View>
       )}
       <View height="20px" />

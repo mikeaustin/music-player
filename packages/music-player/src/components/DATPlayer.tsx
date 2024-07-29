@@ -24,9 +24,11 @@ function DATPlayer(props: DATPlayerProps) {
 
       console.log(metaData);
 
-      const blob = new Blob(metaData.common.picture[0].data);
+      if (metaData.common.picture) {
+        const blob = new Blob([metaData.common.picture[0].data]);
 
-      setPictureUrl(URL.createObjectURL(blob));
+        // setPictureUrl(URL.createObjectURL(blob));
+      }
 
       setInterval(() => {
         setCurrentTime(props.audioNode.context.currentTime);
@@ -131,6 +133,20 @@ function DATPlayer(props: DATPlayerProps) {
             NEXT
           </Button>
         </View>
+      </View>
+      <View flex />
+      <View padding="large xlarge">
+        {pictureUrl() && (
+          <View style={{ border: '1px solid black', "xbox-shadow": '0 0 0 0.5px hsla(0, 0%, 100%, 0.1)' }}>
+            <View xstyle={{
+              position: 'absolute', inset: 0, "z-index": 1, background: `
+                0 0 / 100% 3px linear-gradient(0deg, hsla(0, 0%, 0%, 0.0), hsla(0, 0%, 0%, 0.0) 2px, hsla(0, 0%, 0%, 0.5) 2px),
+                0 0 / 3px 100% linear-gradient(90deg, hsla(0, 0%, 0%, 0.0), hsla(0, 0%, 0%, 0.0) 2px, hsla(0, 0%, 0%, 0.5) 2px)
+              ` }} />
+            <img src={pictureUrl()} width="130" height="130" />
+            {/* 0 0 / 4px 100% linear-gradient(90deg, hsla(0, 0%, 0%, 0.0), hsla(0, 0%, 0%, 1.0)) */}
+          </View>
+        )}
       </View>
     </Component>
   );
