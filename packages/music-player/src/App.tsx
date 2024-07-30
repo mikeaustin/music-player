@@ -6,12 +6,13 @@ import { View, Button, Text } from './core';
 
 import Oscillator from './components/Oscillator';
 import DATPlayer from './components/DATPlayer';
+import Equalizer from './components/Equalizer';
 import Receiver from './components/Receiver';
 
 interface StereoPlugin<T extends AudioNode> {
   shortName: string;
   name: string;
-  audioNode: AudioNode;
+  audioNode: T;
   component: Component<{ audioNode: T, file: File | null; }>;
 }
 
@@ -40,6 +41,17 @@ class DATPlayerPlugin implements StereoPlugin<AudioBufferSourceNode> {
   }
 }
 
+class EqualizerPlugin implements StereoPlugin<BiquadFilterNode> {
+  shortName: string = 'EQ';
+  name: string = 'Equalizer';
+  audioNode: BiquadFilterNode;
+  component = Equalizer;
+
+  constructor(audioContext: AudioContext) {
+    this.audioNode = new BiquadFilterNode(audioContext);
+  }
+}
+
 class ReceiverController {
   audioNode: GainNode;
   analyserNode: AnalyserNode;
@@ -56,23 +68,15 @@ function App() {
   const [file, setFile] = createSignal<File | null>(null);
   const [pictureUrl, setPictureUrl] = createSignal<string>();
   const [selectedInput, setSelectedInput] = createSignal('DAT');
-  // const [components, setComponents] = createSignal<StereoPlugin<any>[] | null>(null);
 
   const audioContext = new AudioContext();
 
-  let oscillatorPlugin: OscillatorPlugin;
-  let datplayerPlugin: DATPlayerPlugin;
-  let receiverPlugin: ReceiverController;
+  let oscillatorPlugin: OscillatorPlugin = new OscillatorPlugin(audioContext);
+  let datplayerPlugin: DATPlayerPlugin = new DATPlayerPlugin(audioContext);
+  let equalizerPlugin: EqualizerPlugin = new EqualizerPlugin(audioContext);
+  let receiverPlugin: ReceiverController = new ReceiverController(audioContext);
 
-  oscillatorPlugin = new OscillatorPlugin(audioContext);
-  datplayerPlugin = new DATPlayerPlugin(audioContext);
-  receiverPlugin = new ReceiverController(audioContext);
-
-  const components: StereoPlugin<any>[] = [datplayerPlugin, oscillatorPlugin];
-
-  receiverPlugin.audioNode
-    .connect(receiverPlugin.analyserNode)
-    .connect(audioContext.destination);
+  const inputComponents: StereoPlugin<any>[] = [datplayerPlugin, oscillatorPlugin];
 
   const handleDragOver: JSX.EventHandler<HTMLDivElement, DragEvent> = (event) => {
     event.preventDefault();
@@ -97,14 +101,16 @@ function App() {
   };
 
   createEffect(() => {
-    components[0].audioNode.disconnect();
-    components[1].audioNode.disconnect();
+    inputComponents[0].audioNode.disconnect();
+    inputComponents[1].audioNode.disconnect();
 
-    const component = components.find(component => component.shortName === selectedInput());
+    const component = inputComponents.find(component => component.shortName === selectedInput());
 
     if (component) {
       component.audioNode
-        .connect(receiverPlugin.audioNode);
+        .connect(receiverPlugin.analyserNode)
+        .connect(receiverPlugin.audioNode)
+        .connect(audioContext.destination);
     }
   });
 
@@ -127,13 +133,14 @@ function App() {
         </View>
       )}
       <View height="20px" />
-      {components.map(component => (
+      {inputComponents.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
+      <Equalizer audioNode={equalizerPlugin.audioNode} file={file()} />
       <Receiver
         audioNode={receiverPlugin?.audioNode}
         analyserNode={receiverPlugin.analyserNode}
-        components={components}
+        inputComponents={inputComponents}
         selectedInput={selectedInput()}
         onInputSelect={handleInputSelect}
       />

@@ -9,13 +9,13 @@ import Component from '../components/Component';
 interface StereoPlugin<T extends AudioNode> {
   shortName: string;
   name: string;
-  audioNode: AudioNode;
+  audioNode: T;
 }
 
 type ReceiverProps = {
   audioNode: GainNode;
   analyserNode: AnalyserNode;
-  components: StereoPlugin<any>[];
+  inputComponents: StereoPlugin<any>[];
   selectedInput: string;
   onInputSelect: (input: string) => void;
 };
@@ -25,8 +25,12 @@ function Receiver(props: ReceiverProps) {
 
   let canvasRef: HTMLCanvasElement;
 
+  const analyserNode = new AnalyserNode(props.audioNode.context);
+
+  // this.props.audioNode.connect()
+
   const handleInputClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (event) => {
-    const component = props.components.find(component => component.shortName === event.currentTarget.dataset.name);
+    const component = props.inputComponents.find(component => component.shortName === event.currentTarget.dataset.name);
 
     console.log(event.currentTarget.dataset, component);
 
@@ -60,7 +64,7 @@ function Receiver(props: ReceiverProps) {
         if (timestamp - lastTimestamp > 1000 / 30) {
           props.analyserNode.getByteTimeDomainData(dataArray);
 
-          const max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 64), 0);
+          const max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
 
           currentMax = (currentMax * 1 + max) / 2;
 
@@ -93,7 +97,7 @@ function Receiver(props: ReceiverProps) {
   });
 
   const selectedInputName = () => {
-    const component = props.components.find(component => component.shortName === props.selectedInput);
+    const component = props.inputComponents.find(component => component.shortName === props.selectedInput);
 
     return component?.name.toUpperCase();
   };
@@ -115,7 +119,7 @@ function Receiver(props: ReceiverProps) {
       </View>
       <View padding="large xlarge">
         <View horizontal style={{ gap: '2px', border: '2px solid black', "border-radius": '4px', overflow: 'hidden', background: 'black' }}>
-          {props.components.map(component => (
+          {props.inputComponents.map(component => (
             <Button align="middle center" width="80px" height="48px" padding="small none" data-name={component.shortName} onClick={handleInputClick}>
               {component.shortName}
             </Button>
