@@ -16,10 +16,13 @@ type ReceiverProps = {
   audioNode: GainNode;
   analyserNode: AnalyserNode;
   components: StereoPlugin<any>[];
+  selectedInput: string;
+  onInputSelect: (input: string) => void;
 };
 
 function Receiver(props: ReceiverProps) {
   const [volume, setVolume] = createSignal(0.5);
+
   let canvasRef: HTMLCanvasElement;
 
   const handleInputClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (event) => {
@@ -27,11 +30,8 @@ function Receiver(props: ReceiverProps) {
 
     console.log(event.currentTarget.dataset, component);
 
-    if (component) {
-      component.audioNode
-        .connect(props.audioNode)
-        .connect(props.analyserNode)
-        .connect(props.audioNode.context.destination);
+    if (event.currentTarget.dataset.name) {
+      props.onInputSelect(event.currentTarget.dataset.name);
     }
   };
 
@@ -92,6 +92,12 @@ function Receiver(props: ReceiverProps) {
     }
   });
 
+  const selectedInputName = () => {
+    const component = props.components.find(component => component.shortName === props.selectedInput);
+
+    return component?.name.toUpperCase();
+  };
+
   return (
     <Component horizontal>
       <View padding="large xlarge">
@@ -102,7 +108,7 @@ function Receiver(props: ReceiverProps) {
       <View padding="large large" style={{ background: 'black', width: '600px', 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
         <View absolute style={{ inset: 0, background: 'linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px) 0px 0px / 100% 300px no-repeat' }} />
         <View>
-          <Text>DAT PLAYER</Text>
+          <Text>{selectedInputName()}</Text>
         </View>
         <View flex />
         <View as="canvas" ref={canvasRef} />

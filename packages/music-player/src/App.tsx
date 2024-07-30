@@ -55,6 +55,7 @@ class ReceiverController {
 function App() {
   const [file, setFile] = createSignal<File | null>(null);
   const [pictureUrl, setPictureUrl] = createSignal<string>();
+  const [selectedInput, setSelectedInput] = createSignal('DAT');
   // const [components, setComponents] = createSignal<StereoPlugin<any>[] | null>(null);
 
   const audioContext = new AudioContext();
@@ -67,11 +68,9 @@ function App() {
   datplayerPlugin = new DATPlayerPlugin(audioContext);
   receiverPlugin = new ReceiverController(audioContext);
 
-  const components: StereoPlugin<any>[] = [oscillatorPlugin, datplayerPlugin];
+  const components: StereoPlugin<any>[] = [datplayerPlugin, oscillatorPlugin];
 
-  // oscillatorPlugin.audioNode
-  datplayerPlugin.audioNode
-    .connect(receiverPlugin.audioNode)
+  receiverPlugin.audioNode
     .connect(receiverPlugin.analyserNode)
     .connect(audioContext.destination);
 
@@ -97,6 +96,22 @@ function App() {
     }
   };
 
+  createEffect(() => {
+    components[0].audioNode.disconnect();
+    components[1].audioNode.disconnect();
+
+    const component = components.find(component => component.shortName === selectedInput());
+
+    if (component) {
+      component.audioNode
+        .connect(receiverPlugin.audioNode);
+    }
+  });
+
+  const handleInputSelect = (input: string) => {
+    setSelectedInput(input);
+  };
+
   return (
     <View
       flex
@@ -115,7 +130,13 @@ function App() {
       {components.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
-      <Receiver audioNode={receiverPlugin?.audioNode} analyserNode={receiverPlugin.analyserNode} components={components} />
+      <Receiver
+        audioNode={receiverPlugin?.audioNode}
+        analyserNode={receiverPlugin.analyserNode}
+        components={components}
+        selectedInput={selectedInput()}
+        onInputSelect={handleInputSelect}
+      />
     </View>
   );
 }
