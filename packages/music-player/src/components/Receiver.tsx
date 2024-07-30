@@ -6,14 +6,34 @@ import Dial from '../components/Dial';
 import Button from '../components/Button';
 import Component from '../components/Component';
 
+interface StereoPlugin<T extends AudioNode> {
+  shortName: string;
+  name: string;
+  audioNode: AudioNode;
+}
+
 type ReceiverProps = {
   audioNode: GainNode;
   analyserNode: AnalyserNode;
+  components: StereoPlugin<any>[];
 };
 
 function Receiver(props: ReceiverProps) {
   const [volume, setVolume] = createSignal(0.5);
   let canvasRef: HTMLCanvasElement;
+
+  const handleInputClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (event) => {
+    const component = props.components.find(component => component.shortName === event.currentTarget.dataset.name);
+
+    console.log(event.currentTarget.dataset, component);
+
+    if (component) {
+      component.audioNode
+        .connect(props.audioNode)
+        .connect(props.analyserNode)
+        .connect(props.audioNode.context.destination);
+    }
+  };
 
   const handleVolumeValueChange = (value: number) => {
     if (props.audioNode) {
@@ -43,8 +63,6 @@ function Receiver(props: ReceiverProps) {
           const max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 64), 0);
 
           currentMax = (currentMax * 1 + max) / 2;
-
-          // console.log(max);
 
           context.clearRect(0, 0, canvasRef.offsetWidth, 20);
 
@@ -91,15 +109,11 @@ function Receiver(props: ReceiverProps) {
       </View>
       <View padding="large xlarge">
         <View horizontal style={{ gap: '2px', border: '2px solid black', "border-radius": '4px', overflow: 'hidden', background: 'black' }}>
-          <Button align="middle center" width="80px" height="48px" padding="small none" onClick={null}>
-            OSC
-          </Button>
-          <Button align="middle center" width="80px" height="48px" padding="small none" onClick={null}>
-            DAT
-          </Button>
-          <Button align="middle center" width="80px" height="48px" padding="small none" onClick={null}>
-            TUNER
-          </Button>
+          {props.components.map(component => (
+            <Button align="middle center" width="80px" height="48px" padding="small none" data-name={component.shortName} onClick={handleInputClick}>
+              {component.shortName}
+            </Button>
+          ))}
         </View>
       </View>
       <View flex />

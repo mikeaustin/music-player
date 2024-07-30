@@ -9,12 +9,14 @@ import DATPlayer from './components/DATPlayer';
 import Receiver from './components/Receiver';
 
 interface StereoPlugin<T extends AudioNode> {
+  shortName: string;
   name: string;
   audioNode: AudioNode;
   component: Component<{ audioNode: T, file: File | null; }>;
 }
 
 class OscillatorPlugin implements StereoPlugin<OscillatorNode> {
+  shortName: string = 'OSC';
   name: string = 'Oscillator';
   audioNode: OscillatorNode;
   component = Oscillator;
@@ -28,6 +30,7 @@ class OscillatorPlugin implements StereoPlugin<OscillatorNode> {
 }
 
 class DATPlayerPlugin implements StereoPlugin<AudioBufferSourceNode> {
+  shortName: string = 'DAT';
   name: string = 'DAT Player';
   audioNode: AudioBufferSourceNode;
   component = DATPlayer;
@@ -52,7 +55,7 @@ class ReceiverController {
 function App() {
   const [file, setFile] = createSignal<File | null>(null);
   const [pictureUrl, setPictureUrl] = createSignal<string>();
-  const [components, setComponents] = createSignal<StereoPlugin<any>[] | null>(null);
+  // const [components, setComponents] = createSignal<StereoPlugin<any>[] | null>(null);
 
   const audioContext = new AudioContext();
 
@@ -60,20 +63,17 @@ function App() {
   let datplayerPlugin: DATPlayerPlugin;
   let receiverPlugin: ReceiverController;
 
-  createEffect(async () => {
-    oscillatorPlugin = new OscillatorPlugin(audioContext);
-    datplayerPlugin = new DATPlayerPlugin(audioContext);
+  oscillatorPlugin = new OscillatorPlugin(audioContext);
+  datplayerPlugin = new DATPlayerPlugin(audioContext);
+  receiverPlugin = new ReceiverController(audioContext);
 
-    receiverPlugin = new ReceiverController(audioContext);
+  const components: StereoPlugin<any>[] = [oscillatorPlugin, datplayerPlugin];
 
-    setComponents([oscillatorPlugin, datplayerPlugin]);
-
-    // oscillatorPlugin.audioNode
-    datplayerPlugin.audioNode
-      .connect(receiverPlugin.audioNode)
-      .connect(receiverPlugin.analyserNode)
-      .connect(audioContext.destination);
-  });
+  // oscillatorPlugin.audioNode
+  datplayerPlugin.audioNode
+    .connect(receiverPlugin.audioNode)
+    .connect(receiverPlugin.analyserNode)
+    .connect(audioContext.destination);
 
   const handleDragOver: JSX.EventHandler<HTMLDivElement, DragEvent> = (event) => {
     event.preventDefault();
@@ -92,7 +92,7 @@ function App() {
       if (metaData.common.picture) {
         const blob = new Blob([metaData.common.picture[0].data]);
 
-        setPictureUrl(URL.createObjectURL(blob));
+        // setPictureUrl(URL.createObjectURL(blob));
       }
     }
   };
@@ -112,10 +112,10 @@ function App() {
         </View>
       )}
       <View height="20px" />
-      {components()?.map(component => (
+      {components.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
-      <Receiver audioNode={receiverPlugin?.audioNode} analyserNode={receiverPlugin.analyserNode} />
+      <Receiver audioNode={receiverPlugin?.audioNode} analyserNode={receiverPlugin.analyserNode} components={components} />
     </View>
   );
 }
