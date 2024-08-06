@@ -106,7 +106,6 @@ function App() {
 
     if (component) {
       component.audioNode
-        // .connect(equalizerPlugin.analyserNode)
         .connect(receiverPlugin.audioNode)
         .connect(audioContext.destination);
     }
