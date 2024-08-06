@@ -41,16 +41,14 @@ class DATPlayerPlugin implements StereoPlugin<AudioBufferSourceNode> {
   }
 }
 
-class EqualizerPlugin implements StereoPlugin<BiquadFilterNode> {
+class EqualizerPlugin {
   shortName: string = 'EQ';
   name: string = 'Equalizer';
   audioNode: BiquadFilterNode;
-  analyserNode: AnalyserNode;
   component = Equalizer;
 
   constructor(audioContext: AudioContext) {
     this.audioNode = new BiquadFilterNode(audioContext);
-    this.analyserNode = new AnalyserNode(audioContext);
   }
 }
 
@@ -107,10 +105,8 @@ function App() {
     const component = inputComponents.find(component => component.shortName === selectedInput());
 
     if (component) {
-      equalizerPlugin.analyserNode.smoothingTimeConstant = 0.5;
-
       component.audioNode
-        .connect(equalizerPlugin.analyserNode)
+        // .connect(equalizerPlugin.analyserNode)
         .connect(receiverPlugin.audioNode)
         .connect(audioContext.destination);
     }
@@ -141,6 +137,7 @@ function App() {
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
       <Equalizer
+        source={getComponent()?.audioNode}
         audioNode={equalizerPlugin.audioNode}
         analyserNode={equalizerPlugin.analyserNode}
         file={file()}
