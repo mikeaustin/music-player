@@ -107,6 +107,8 @@ function App() {
     const component = inputComponents.find(component => component.shortName === selectedInput());
 
     if (component) {
+      equalizerPlugin.analyserNode.smoothingTimeConstant = 0.5;
+
       component.audioNode
         .connect(equalizerPlugin.analyserNode)
         .connect(receiverPlugin.audioNode)

@@ -55,7 +55,8 @@ function Receiver(props: ReceiverProps) {
     splitterNode.connect(analyserNodeRight, 1);
 
     const context = canvasRef.getContext('2d');
-    let currentMax = 0.0;
+    let currentMaxLeft = 0.0;
+    let currentMaxRight = 0.0;
 
     const dataArray = analyserNodeLeft && new Uint8Array(analyserNodeLeft.frequencyBinCount);
 
@@ -75,9 +76,9 @@ function Receiver(props: ReceiverProps) {
           analyserNodeLeft.getByteTimeDomainData(dataArray);
 
           let max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
-          currentMax = (currentMax * 1 + max) / 2;
+          currentMaxLeft = (currentMaxLeft * 1 + max) / 2;
 
-          for (let volume = 0; volume < currentMax * ((canvasRef.offsetWidth - 32) / 2 / 5); ++volume) {
+          for (let volume = 0; volume < currentMaxLeft * ((canvasRef.offsetWidth - 32) / 2 / 5); ++volume) {
             context.fillRect(volume * 5, 0, 3, 20);
           }
 
@@ -86,9 +87,9 @@ function Receiver(props: ReceiverProps) {
           analyserNodeRight.getByteTimeDomainData(dataArray);
 
           max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
-          currentMax = (currentMax * 1 + max) / 2;
+          currentMaxRight = (currentMaxRight * 1 + max) / 2;
 
-          for (let volume = 0; volume < currentMax * ((canvasRef.offsetWidth - 24) / 2 / 5); ++volume) {
+          for (let volume = 0; volume < currentMaxRight * ((canvasRef.offsetWidth - 24) / 2 / 5); ++volume) {
             context.fillRect((canvasRef.offsetWidth + 24) / 2 + volume * 5, 0, 3, 20);
           }
 
