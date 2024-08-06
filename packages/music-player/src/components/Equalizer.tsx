@@ -57,6 +57,7 @@ function Slider() {
 
 type EqualizerProps = {
   audioNode: BiquadFilterNode;
+  analyserNode: AnalyserNode;
   file: File | null;
 };
 
@@ -64,37 +65,49 @@ function Equalizer(props: EqualizerProps) {
   const [frequency, setFrequency] = createSignal(0.5);
   const [waveType, setWaveType] = createSignal('sine');
 
-  const handlePlayButtonClick = () => {
-    if (props.audioNode) {
-      props.audioNode.start();
-    }
-  };
+  let canvasRef: HTMLCanvasElement;
 
-  const handleFrequencyValueChange = (value: number) => {
-    if (props.audioNode) {
-      setFrequency(value);
-    }
-  };
-
-  const handleWaveTypeButtonClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (event) => {
-    console.log(event.currentTarget.dataset.type);
-
-    setWaveType(event.currentTarget.dataset.type ?? 'sine');
-  };
+  let frequencies = Array.from({ length: 10 }, () => 1.0);
 
   createEffect(() => {
-    const value = waveType();
+    canvasRef.width = canvasRef.parentElement?.offsetWidth - 52;
+    canvasRef.height = canvasRef.parentElement?.offsetHeight - 52;
 
-    if (props.audioNode) {
-      props.audioNode.type = value;
-    }
-  });
+    // props.analyserNode.smoothingTimeConstant = 0.2;
 
-  createEffect(() => {
-    const value = 2 ** (frequency() * 10 + 4.3219281);
+    const dataArray = props.analyserNode && new Uint8Array(props.analyserNode.frequencyBinCount);
 
-    if (props.audioNode) {
-      props.audioNode.frequency.value = value;
+    const context = canvasRef.getContext('2d');
+
+    if (context) {
+      const offset = 5 + 5 * (canvasRef.height / 5 - Math.floor(canvasRef.height / 5));
+
+      context.fillStyle = '#38BDF8';
+
+      const animationFrame = (timestamp: number) => {
+        props.analyserNode.getByteFrequencyData(dataArray);
+
+        for (let i = 0; i < frequencies.length; ++i) {
+          // frequencies[i] = (frequencies[i] * 1 + dataArray[Math.floor((2 ** i - 1) * (1 / (41000 / 48000)))] / 255) / 2;
+          // frequencies[i] = dataArray[Math.floor(i / 9 * 1024 * (20000 / 96000))] / 255;
+          // frequencies[i] = dataArray[2 ** Math.floor(i * 2 * 20000 / 48000) - 2] / 255;
+          frequencies[i] = dataArray[Math.floor((2 ** i) * 2 * (20000 / 48000))] / 255;
+        }
+
+        // console.log(dataArray);
+
+        context.clearRect(0, 0, 1000, 1000);
+
+        for (let [index, volume] of frequencies.entries()) {
+          for (let i = 0; i < volume * canvasRef.height / 5; ++i) {
+            context.fillRect(index * 25, canvasRef.height - offset - (i * 5), 20, 3);
+          }
+        }
+
+        requestAnimationFrame(animationFrame);
+      };
+
+      requestAnimationFrame(animationFrame);
     }
   });
 
@@ -107,6 +120,7 @@ function Equalizer(props: EqualizerProps) {
       </View>
       <View padding="large large" style={{ background: 'black', width: '600px', "flex-shrink": 0, 'border-left': '2px solid black', 'border-right': '2px solid black' }}>
         <View absolute style={{ inset: 0, background: 'linear-gradient(hsl(0, 0%, 0%), hsl(0, 0%, 5%) 50px, hsl(0, 0%, 0%) 150px) 0px 0px / 100% 300px no-repeat' }} />
+        <View as="canvas" ref={canvasRef} />
       </View>
       <View horizontal padding="large xlarge" style={{ gap: '24px' }}>
         <Slider />

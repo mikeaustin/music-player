@@ -45,10 +45,12 @@ class EqualizerPlugin implements StereoPlugin<BiquadFilterNode> {
   shortName: string = 'EQ';
   name: string = 'Equalizer';
   audioNode: BiquadFilterNode;
+  analyserNode: AnalyserNode;
   component = Equalizer;
 
   constructor(audioContext: AudioContext) {
     this.audioNode = new BiquadFilterNode(audioContext);
+    this.analyserNode = new AnalyserNode(audioContext);
   }
 }
 
@@ -108,6 +110,8 @@ function App() {
 
     if (component) {
       component.audioNode
+        // .connect(equalizerPlugin.audioNode)
+        .connect(equalizerPlugin.analyserNode)
         .connect(receiverPlugin.analyserNode)
         .connect(receiverPlugin.audioNode)
         .connect(audioContext.destination);
@@ -136,7 +140,7 @@ function App() {
       {inputComponents.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
-      <Equalizer audioNode={equalizerPlugin.audioNode} file={file()} />
+      <Equalizer audioNode={equalizerPlugin.audioNode} analyserNode={equalizerPlugin.analyserNode} file={file()} />
       <Receiver
         audioNode={receiverPlugin?.audioNode}
         analyserNode={receiverPlugin.analyserNode}
