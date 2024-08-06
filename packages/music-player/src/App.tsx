@@ -56,11 +56,9 @@ class EqualizerPlugin implements StereoPlugin<BiquadFilterNode> {
 
 class ReceiverController {
   audioNode: GainNode;
-  analyserNode: AnalyserNode;
 
   constructor(audioContext: AudioContext) {
     this.audioNode = new GainNode(audioContext);
-    this.analyserNode = new AnalyserNode(audioContext);
   }
 }
 
@@ -110,9 +108,7 @@ function App() {
 
     if (component) {
       component.audioNode
-        // .connect(equalizerPlugin.audioNode)
         .connect(equalizerPlugin.analyserNode)
-        .connect(receiverPlugin.analyserNode)
         .connect(receiverPlugin.audioNode)
         .connect(audioContext.destination);
     }
@@ -121,6 +117,8 @@ function App() {
   const handleInputSelect = (input: string) => {
     setSelectedInput(input);
   };
+
+  const getComponent = () => inputComponents.find(component => component.shortName === selectedInput());
 
   return (
     <View
@@ -140,10 +138,14 @@ function App() {
       {inputComponents.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
-      <Equalizer audioNode={equalizerPlugin.audioNode} analyserNode={equalizerPlugin.analyserNode} file={file()} />
+      <Equalizer
+        audioNode={equalizerPlugin.audioNode}
+        analyserNode={equalizerPlugin.analyserNode}
+        file={file()}
+      />
       <Receiver
+        source={getComponent()?.audioNode}
         audioNode={receiverPlugin?.audioNode}
-        analyserNode={receiverPlugin.analyserNode}
         inputComponents={inputComponents}
         selectedInput={selectedInput()}
         onInputSelect={handleInputSelect}

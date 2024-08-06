@@ -13,8 +13,8 @@ interface StereoPlugin<T extends AudioNode> {
 }
 
 type ReceiverProps = {
+  source: AudioNode;
   audioNode: GainNode;
-  analyserNode: AnalyserNode;
   inputComponents: StereoPlugin<any>[];
   selectedInput: string;
   onInputSelect: (input: string) => void;
@@ -24,10 +24,6 @@ function Receiver(props: ReceiverProps) {
   const [volume, setVolume] = createSignal(0.5);
 
   let canvasRef: HTMLCanvasElement;
-
-  const analyserNode = new AnalyserNode(props.audioNode.context);
-
-  // this.props.audioNode.connect()
 
   const handleInputClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (event) => {
     const component = props.inputComponents.find(component => component.shortName === event.currentTarget.dataset.name);
@@ -46,10 +42,22 @@ function Receiver(props: ReceiverProps) {
   };
 
   createEffect(() => {
+    let splitterNode = new ChannelSplitterNode(props.audioNode.context, {
+      numberOfOutputs: 2,
+    });
+
+    const analyserNodeLeft = new AnalyserNode(props.audioNode.context);
+    const analyserNodeRight = new AnalyserNode(props.audioNode.context);
+
+    props.source.connect(splitterNode);
+
+    splitterNode.connect(analyserNodeLeft, 0);
+    splitterNode.connect(analyserNodeRight, 1);
+
     const context = canvasRef.getContext('2d');
     let currentMax = 0.0;
 
-    const dataArray = props.analyserNode && new Uint8Array(props.analyserNode.frequencyBinCount);
+    const dataArray = analyserNodeLeft && new Uint8Array(analyserNodeLeft.frequencyBinCount);
 
     let lastTimestamp = performance.now();
 
@@ -62,17 +70,23 @@ function Receiver(props: ReceiverProps) {
 
       const animationFrame = (timestamp: number) => {
         if (timestamp - lastTimestamp > 1000 / 30) {
-          props.analyserNode.getByteTimeDomainData(dataArray);
-
-          const max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
-
-          currentMax = (currentMax * 1 + max) / 2;
-
           context.clearRect(0, 0, canvasRef.offsetWidth, 20);
+
+          analyserNodeLeft.getByteTimeDomainData(dataArray);
+
+          let max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
+          currentMax = (currentMax * 1 + max) / 2;
 
           for (let volume = 0; volume < currentMax * ((canvasRef.offsetWidth - 32) / 2 / 5); ++volume) {
             context.fillRect(volume * 5, 0, 3, 20);
           }
+
+          //
+
+          analyserNodeRight.getByteTimeDomainData(dataArray);
+
+          max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
+          currentMax = (currentMax * 1 + max) / 2;
 
           for (let volume = 0; volume < currentMax * ((canvasRef.offsetWidth - 24) / 2 / 5); ++volume) {
             context.fillRect((canvasRef.offsetWidth + 24) / 2 + volume * 5, 0, 3, 20);
