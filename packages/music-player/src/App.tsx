@@ -63,18 +63,24 @@ class ReceiverController {
 //
 
 function App() {
+  const audioContext = new AudioContext();
+
   const [file, setFile] = createSignal<File | null>(null);
   const [pictureUrl, setPictureUrl] = createSignal<string>();
   const [selectedInput, setSelectedInput] = createSignal('DAT');
 
-  const audioContext = new AudioContext();
+  const [oscillatorPlugin, setOscillatorPlugin] = createSignal<OscillatorPlugin>(new OscillatorPlugin(audioContext));
+  const [datplayerPlugin, setDatplayerPlugin] = createSignal<DATPlayerPlugin>(new DATPlayerPlugin(audioContext));
 
-  let oscillatorPlugin: OscillatorPlugin = new OscillatorPlugin(audioContext);
-  let datplayerPlugin: DATPlayerPlugin = new DATPlayerPlugin(audioContext);
+  // let oscillatorPlugin: OscillatorPlugin = new OscillatorPlugin(audioContext);
+  // let datplayerPlugin: DATPlayerPlugin = new DATPlayerPlugin(audioContext);
   let equalizerPlugin: EqualizerPlugin = new EqualizerPlugin(audioContext);
   let receiverPlugin: ReceiverController = new ReceiverController(audioContext);
 
-  const inputComponents: StereoPlugin<any>[] = [datplayerPlugin, oscillatorPlugin];
+  datplayerPlugin().audioNode.start();
+  oscillatorPlugin().audioNode.start();
+
+  const inputComponents: () => StereoPlugin<any>[] = () => [datplayerPlugin(), oscillatorPlugin()];
 
   const handleDragOver: JSX.EventHandler<HTMLDivElement, DragEvent> = (event) => {
     event.preventDefault();
@@ -88,6 +94,31 @@ function App() {
     if (file) {
       setFile(file);
 
+      datplayerPlugin().audioNode.stop();
+      datplayerPlugin().audioNode.disconnect();
+      oscillatorPlugin().audioNode.stop();
+      oscillatorPlugin().audioNode.disconnect();
+
+      setOscillatorPlugin(new OscillatorPlugin(audioContext));
+      setDatplayerPlugin(new DATPlayerPlugin(audioContext));
+      let equalizerPlugin: EqualizerPlugin = new EqualizerPlugin(audioContext);
+      let receiverPlugin: ReceiverController = new ReceiverController(audioContext);
+
+      datplayerPlugin().audioNode.buffer = await audioContext.decodeAudioData(await file.arrayBuffer());
+      datplayerPlugin().audioNode.start();
+
+      oscillatorPlugin().audioNode.start();
+
+      const component = inputComponents().find(component => component.shortName === selectedInput());
+
+      if (component) {
+        component.audioNode
+          .connect(receiverPlugin.audioNode)
+          .connect(audioContext.destination);
+      }
+
+      //
+
       const metaData = await parseBuffer(new Uint8Array(await file.arrayBuffer()));
 
       if (metaData.common.picture) {
@@ -98,24 +129,24 @@ function App() {
     }
   };
 
-  createEffect(() => {
-    inputComponents[0].audioNode.disconnect();
-    inputComponents[1].audioNode.disconnect();
+  // createEffect(() => {
+  //   inputComponents[0].audioNode.disconnect();
+  //   inputComponents[1].audioNode.disconnect();
 
-    const component = inputComponents.find(component => component.shortName === selectedInput());
+  //   const component = inputComponents.find(component => component.shortName === selectedInput());
 
-    if (component) {
-      component.audioNode
-        .connect(receiverPlugin.audioNode)
-        .connect(audioContext.destination);
-    }
-  });
+  //   if (component) {
+  //     component.audioNode
+  //       .connect(receiverPlugin.audioNode)
+  //       .connect(audioContext.destination);
+  //   }
+  // });
 
   const handleInputSelect = (input: string) => {
     setSelectedInput(input);
   };
 
-  const getComponent = () => inputComponents.find(component => component.shortName === selectedInput());
+  const getComponent = () => inputComponents().find(component => component.shortName === selectedInput());
 
   return (
     <View
@@ -132,19 +163,18 @@ function App() {
         </View>
       )}
       <View height="20px" />
-      {inputComponents.map(component => (
+      {inputComponents()?.map(component => (
         <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
       ))}
       <Equalizer
         source={getComponent()?.audioNode}
         audioNode={equalizerPlugin.audioNode}
-        analyserNode={equalizerPlugin.analyserNode}
         file={file()}
       />
       <Receiver
         source={getComponent()?.audioNode}
         audioNode={receiverPlugin?.audioNode}
-        inputComponents={inputComponents}
+        inputComponents={inputComponents()}
         selectedInput={selectedInput()}
         onInputSelect={handleInputSelect}
       />

@@ -22,8 +22,6 @@ function DATPlayer(props: DATPlayerProps) {
 
       setMetaData(metaData);
 
-      console.log(metaData);
-
       if (metaData.common.picture) {
         const blob = new Blob([metaData.common.picture[0].data]);
 
@@ -33,10 +31,6 @@ function DATPlayer(props: DATPlayerProps) {
       setInterval(() => {
         setCurrentTime(props.audioNode.context.currentTime);
       }, 1000);
-
-      props.audioNode.buffer = await props.audioNode.context.decodeAudioData(await props.file.arrayBuffer());
-
-      props.audioNode.start();
     }
   });
 

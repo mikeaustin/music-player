@@ -63,7 +63,7 @@ function Receiver(props: ReceiverProps) {
     let lastTimestamp = performance.now();
 
     if (context) {
-      canvasRef.width = canvasRef.parentElement?.offsetWidth - 52 ?? 0;
+      canvasRef.width = canvasRef.parentElement?.offsetWidth - 52;
       // canvasRef.width = 548;
       canvasRef.height = 20;
 
