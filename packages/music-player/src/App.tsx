@@ -117,8 +117,6 @@ function App() {
           .connect(audioContext.destination);
       }
 
-      //
-
       const metaData = await parseBuffer(new Uint8Array(await file.arrayBuffer()));
 
       if (metaData.common.picture) {
@@ -129,18 +127,18 @@ function App() {
     }
   };
 
-  // createEffect(() => {
-  //   inputComponents[0].audioNode.disconnect();
-  //   inputComponents[1].audioNode.disconnect();
+  createEffect(() => {
+    // inputComponents[0].audioNode.disconnect();
+    // inputComponents[1].audioNode.disconnect();
 
-  //   const component = inputComponents.find(component => component.shortName === selectedInput());
+    const component = inputComponents().find(component => component.shortName === selectedInput());
 
-  //   if (component) {
-  //     component.audioNode
-  //       .connect(receiverPlugin.audioNode)
-  //       .connect(audioContext.destination);
-  //   }
-  // });
+    if (component) {
+      component.audioNode
+        .connect(receiverPlugin.audioNode)
+        .connect(audioContext.destination);
+    }
+  });
 
   const handleInputSelect = (input: string) => {
     setSelectedInput(input);
@@ -150,34 +148,39 @@ function App() {
 
   return (
     <View
-      flex
-      align="bottom center"
       style={{ position: 'fixed', inset: 0, background: 'radial-gradient(at bottom, hsl(0, 0%, 15%), hsl(0, 0%, 0%) 1500px)' }}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      {pictureUrl() && (
-        <View style={{ xtransform: 'perspective(1000px) rotateX(22deg)', "transform-origin": '50% 100%' }}>
-          <View style={{ position: 'absolute', inset: 0, "box-shadow": 'inset 0 0 0 1px hsla(0, 0%, 100%, 0.1)' }} />
-          <img src={pictureUrl()} width="300" height="300" />
-        </View>
-      )}
-      <View height="20px" />
-      {inputComponents()?.map(component => (
-        <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
-      ))}
-      <Equalizer
-        source={getComponent()?.audioNode}
-        audioNode={equalizerPlugin.audioNode}
-        file={file()}
-      />
-      <Receiver
-        source={getComponent()?.audioNode}
-        audioNode={receiverPlugin?.audioNode}
-        inputComponents={inputComponents()}
-        selectedInput={selectedInput()}
-        onInputSelect={handleInputSelect}
-      />
+      <View align="middle center" style={{ 'margin-top': '20px' }}>
+        <Text style={{ "font-family": 'sans-serif', color: 'hsl(0, 0%, 50%)' }}>
+          Drag a music file (.mp3, .flac, etc.) anywhere in this window to play it
+        </Text>
+      </View>
+      <View flex align="bottom center">
+        {pictureUrl() && (
+          <View style={{ xtransform: 'perspective(1000px) rotateX(22deg)', "transform-origin": '50% 100%' }}>
+            <View style={{ position: 'absolute', inset: 0, "box-shadow": 'inset 0 0 0 1px hsla(0, 0%, 100%, 0.1)' }} />
+            <img src={pictureUrl()} width="300" height="300" />
+          </View>
+        )}
+        <View height="20px" />
+        {inputComponents()?.map(component => (
+          <Dynamic component={component.component} audioNode={component.audioNode} file={file()} />
+        ))}
+        <Equalizer
+          source={getComponent()?.audioNode}
+          audioNode={equalizerPlugin.audioNode}
+          file={file()}
+        />
+        <Receiver
+          source={getComponent()?.audioNode}
+          audioNode={receiverPlugin?.audioNode}
+          inputComponents={inputComponents()}
+          selectedInput={selectedInput()}
+          onInputSelect={handleInputSelect}
+        />
+      </View>
     </View>
   );
 }

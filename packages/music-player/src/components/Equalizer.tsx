@@ -97,12 +97,10 @@ function Equalizer(props: EqualizerProps) {
     if (context) {
       const offset = 3 + (canvasRef.height / 5 - Math.floor(canvasRef.height / 5));
 
-      context.fillStyle = '#38BDF8';
-
-      analyserNodeLeft.maxDecibels = -10;
+      analyserNodeLeft.maxDecibels = -13;
       analyserNodeLeft.minDecibels = -60;
 
-      analyserNodeRight.maxDecibels = -10;
+      analyserNodeRight.maxDecibels = -13;
       analyserNodeRight.minDecibels = -60;
 
       const animationFrame = (timestamp: number) => {
@@ -116,6 +114,10 @@ function Equalizer(props: EqualizerProps) {
           }
 
           for (let [index, volume] of frequencies.entries()) {
+            context.fillStyle = '#38BDF880';
+            context.fillRect(index * 25, canvasRef.height - offset - (0 * 5), 20, 3);
+
+            context.fillStyle = '#38BDF8';
             for (let i = 0; i < volume * canvasRef.height / 5; ++i) {
               context.fillRect(index * 25, canvasRef.height - offset - (i * 5), 20, 3);
             }
@@ -128,6 +130,10 @@ function Equalizer(props: EqualizerProps) {
           }
 
           for (let [index, volume] of frequencies.entries()) {
+            context.fillStyle = '#38BDF880';
+            context.fillRect(index * 25 + 275, canvasRef.height - offset - (0 * 5), 20, 3);
+
+            context.fillStyle = '#38BDF8';
             for (let i = 0; i < volume * canvasRef.height / 5; ++i) {
               context.fillRect(index * 25 + 275, canvasRef.height - offset - (i * 5), 20, 3);
             }

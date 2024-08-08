@@ -67,8 +67,6 @@ function Receiver(props: ReceiverProps) {
       // canvasRef.width = 548;
       canvasRef.height = 20;
 
-      context.fillStyle = '#38BDF8';
-
       const animationFrame = (timestamp: number) => {
         if (timestamp - lastTimestamp > 1000 / 30) {
           context.clearRect(0, 0, canvasRef.offsetWidth, 20);
@@ -78,6 +76,10 @@ function Receiver(props: ReceiverProps) {
           let max = dataArray.reduce((max, value) => Math.max(max, Math.abs(value - 128) / 128), 0);
           currentMaxLeft = (currentMaxLeft * 1 + max) / 2;
 
+          context.fillStyle = '#38BDF880';
+          context.fillRect(0 * 5, 0, 3, 20);
+
+          context.fillStyle = '#38BDF8';
           for (let volume = 0; volume < currentMaxLeft * ((canvasRef.offsetWidth - 32) / 2 / 5); ++volume) {
             context.fillRect(volume * 5, 0, 3, 20);
           }
@@ -89,6 +91,10 @@ function Receiver(props: ReceiverProps) {
           max = dataArray.reduce((max, value) => Math.max(max, Math.abs(value - 128) / 128), 0);
           currentMaxRight = (currentMaxRight * 1 + max) / 2;
 
+          context.fillStyle = '#38BDF880';
+          context.fillRect((canvasRef.offsetWidth + 24) / 2 + 0 * 5, 0, 3, 20);
+
+          context.fillStyle = '#38BDF8';
           for (let volume = 0; volume < currentMaxRight * ((canvasRef.offsetWidth - 24) / 2 / 5); ++volume) {
             context.fillRect((canvasRef.offsetWidth + 24) / 2 + volume * 5, 0, 3, 20);
           }
