@@ -99,6 +99,12 @@ function Equalizer(props: EqualizerProps) {
 
       context.fillStyle = '#38BDF8';
 
+      analyserNodeLeft.maxDecibels = -10;
+      analyserNodeLeft.minDecibels = -60;
+
+      analyserNodeRight.maxDecibels = -10;
+      analyserNodeRight.minDecibels = -60;
+
       const animationFrame = (timestamp: number) => {
         if (timestamp - lastTimestamp > 1000 / 30) {
           context.clearRect(0, 0, 1000, 1000);

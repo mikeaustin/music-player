@@ -75,7 +75,7 @@ function Receiver(props: ReceiverProps) {
 
           analyserNodeLeft.getByteTimeDomainData(dataArray);
 
-          let max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
+          let max = dataArray.reduce((max, value) => Math.max(max, Math.abs(value - 128) / 128), 0);
           currentMaxLeft = (currentMaxLeft * 1 + max) / 2;
 
           for (let volume = 0; volume < currentMaxLeft * ((canvasRef.offsetWidth - 32) / 2 / 5); ++volume) {
@@ -86,7 +86,7 @@ function Receiver(props: ReceiverProps) {
 
           analyserNodeRight.getByteTimeDomainData(dataArray);
 
-          max = dataArray.reduce((max, value) => Math.max(max, (value - 128) / 128), 0);
+          max = dataArray.reduce((max, value) => Math.max(max, Math.abs(value - 128) / 128), 0);
           currentMaxRight = (currentMaxRight * 1 + max) / 2;
 
           for (let volume = 0; volume < currentMaxRight * ((canvasRef.offsetWidth - 24) / 2 / 5); ++volume) {
