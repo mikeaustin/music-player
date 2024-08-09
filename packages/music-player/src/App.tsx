@@ -154,7 +154,7 @@ function App() {
     >
       <View align="middle center" style={{ 'margin-top': '20px' }}>
         <Text style={{ "font-family": 'sans-serif', color: 'hsl(0, 0%, 50%)' }}>
-          Drag a music file (.mp3, .flac, etc.) anywhere in this window to play it
+          Drag a music file (.mp3, .flac, etc.) here to play it
         </Text>
       </View>
       <View flex align="bottom center">
